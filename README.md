@@ -101,21 +101,21 @@ customFile:
 
 ## 三、常见问题与排错
 ### 3.1 JDK版本冲突
-- **问题现象**：启动报错`kdfkdfh`。
+- **问题现象**：启动报错`UnsupportedClassVersionError`。
 - **原因分析**：JDK版本冲突。
 - **解决方案** 
   1. 提供[JDK11官方下载连接](https://www.oracle.com/cn/java/technologies/javase/jdk11-archive-downloads.html)。 
   2. 检查IDE编译环境是否为JDK11.
   3. 检查系统环境变量中JDK路径是否为JDK11的路径，且JDK11的路径优先级应高于官方路径`C:\\Program Files\\Common Files\\Oracle\\Java\\javapath\\ ` 
 ### 3.2 数据库连接异常 
-- **问题现象**：启动报错`kdfkdfh`
+- **问题现象**：启动报错`Communications link failure`
 - **原因分析**：MySQL 服务未启动、配置信息错误、或权限问题。
 - **解决方案** 
   1. 确认mysql服务已启动 。
   2. 逐项核对 `application.yml` 中的 `url`, `username`, `password`。
-  3. 附上修改 MySQL 用户权限的示例 SQL 语句。
+  3. 提供修改 MySQL 用户权限的示例 SQL 语句。
 ### 3.3 Maven依赖下载失败/缺失
-- **问题现象**：启动报错`kdfkdfh`
+- **问题现象**：启动报错` Failed to collect dependencies`
 - **原因分析**：网络问题导致依赖下载失败，或本地仓库损坏。
 - **解决方案** 
   1. 检查网络，或配置国内镜像源（提供阿里云 Maven 镜像配置示例）。
@@ -173,3 +173,4 @@ customFile:
     2.  **问题描述**：清晰描述操作步骤、预期结果、实际结果。
     3.  **错误日志**：复制完整的错误日志或截图。
     4.  **已尝试的解决步骤**：说明你已根据本指南做了哪些尝试。
+
