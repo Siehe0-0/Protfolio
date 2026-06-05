@@ -117,33 +117,18 @@ git push -u origin main
 ### 2.2 DNS解析失败
 - 报错：lookup github-cloud.s3.amazonaws.com: no such host 
 - 说明：国内 DNS 污染或网络问题，无法解析GitHub LFS 存储图片的 AWS S3 服务器地址
-- 有以下四个方案解决：
-> 1.修改hosts文件（低风险）
-> 2.配置git代理（中低风险）
-> 3.更换系统DNS（安全）
-> 4.使用SSH协议（安全）
+> **有以下四个方案解决：**
+>
+> - 1.修改hosts文件（低风险）
+> - 2.配置git代理（中低风险）
+> - 3.更换系统DNS（安全）
+> - 4.使用SSH协议（安全）
 
 ```
 
 #在此仅介绍修改hosts文件
 1.获取可信ip
 
-
-#检查状态
-git remote -v
-
-#强制推送
-git push --force --all
-
-切换命令反馈
-1.未配置ssh密钥
-
-2.首次连接
-
-3.已有密钥但未添加到github
-
-4.ssh连接失败
--- 配置ssh代理：
 
 ```
 
@@ -184,6 +169,8 @@ git lfs track "*.png"
 git lfs track "*.jpg"
 
 #提交.gitattributes配置文件的修改，LGS规则通过该文件共享，安装LFS客户端即可获取真实文件
+git add .gitattributes
+git commit -m "使用GitLFS管理图片"
 
 #配置之前已上传过图片的解决方法：重写历史并迁移图片
 git lfs migrate import --include="*.png, *.jpg" --everything

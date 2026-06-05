@@ -1,6 +1,6 @@
 # Markdown使用
 
-[官方教程](https://markdown.com.cn/basic-syntax/horizontal-rules.html)
+[官方教程](https://markdown.com.cn/basic-syntax/)
 
 ## 注意事项
 
