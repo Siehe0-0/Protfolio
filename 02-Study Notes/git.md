@@ -124,7 +124,7 @@ git pull origin main --allow-unrelated-histories
 # 然后再推送
 git push -u origin main
 ```
-### 2.3删除所悟上传的文件夹
+### 2.3删除错误上传的文件夹
   例如，我们要删除的文件夹名为B，上级文件夹为A
 
 ```
@@ -139,5 +139,7 @@ git commit -m "删除错误文件夹"
 #推送到远程
 git push
 ```
+### 2.4上传图片大导致的仓库臃肿
+  
 
 
