@@ -1,5 +1,6 @@
 # Git使用
 ## 一、第一次完整使用（从创建到推送）
+![内容流转](./img/deliver.png)
 <table>
   <thead>
     <tr>
@@ -42,7 +43,7 @@
       <td><code>.</code>表示当前目录所有文件</td>
     </tr>
     <tr>
-      <td>添加提交信息</td>
+      <td>将修改提交至本地仓库</td>
       <td><code>git commit -m "提交说明"</code></td>
       <td>引号内为提交说明</td>
     </tr>
