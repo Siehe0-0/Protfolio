@@ -98,7 +98,7 @@
 
 
 ## 二、常见问题及解决
-### 2.1远程仓库已有文件（如README）
+### 2.1 远程仓库已有文件（如README）
   创建远程仓库时勾选了"Add a README"或".gitignore"
 
 ```
@@ -112,19 +112,37 @@ git pull origin main --allow-unrelated-histories
 git push -u origin main
 ```
 
-### 2.2安全验证
-  如果使用SSH（更安全，不用每次输密码）：
+### 2.2 DNS解析失败
+- 报错：lookup github-cloud.s3.amazonaws.com: no such host 
+- 说明：国内 DNS 污染或网络问题，无法解析GitHub LFS 存储图片的 AWS S3 服务器地址
 ```
-# 先拉取远程内容（因为远程不为空）
-git pull origin main --allow-unrelated-histories
+# 有以下四个方案解决：
+- 1.修改hosts文件（低风险）
+- 2.配置git代理（中低风险）
+- 3.更换系统DNS（安全）
+- 4.使用SSH协议（安全）
 
-# 解决可能的冲突
-# 如果提示有冲突，手动合并文件
+#在此仅介绍SSH协议使用方法
+#公钥获取：
+git remote set-url origin （公钥）
 
-# 然后再推送
-git push -u origin main
+#检查状态
+git remote -v
+
+#强制推送
+git push --force --all
+
+切换命令反馈
+1.未配置ssh密钥
+
+2.首次连接
+
+3.已有密钥但未添加到github
+
+4.ssh连接失败
+-- 配置ssh代理：
 ```
-### 2.3删除错误上传的文件夹
+### 2.3 删除错误上传的文件夹
   例如，我们要删除的文件夹名为B，上级文件夹为A
 
 ```
@@ -139,7 +157,31 @@ git commit -m "删除错误文件夹"
 #推送到远程
 git push
 ```
-### 2.4上传图片大导致的仓库臃肿
+### 2.4 上传图片大导致的仓库臃肿
+  Git官方提供Git LFS工具
+  - Git存储和LFS存储分开管理
   
+  ```
+#工具安装
+1.Windows：git for windows自带
+2.macOS:brew install git-lfs
+3.Linux:sudo apt-get install git-lfs
+
+#工具初始化
+git lfs install
+
+#指定要追踪的图片类型
+git lfs track "*.png"
+git lfs track "*.jpg"
+
+#提交.gitattributes配置文件的修改，LGS规则通过该文件共享，安装LFS客户端即可获取真实文件
+
+#配置之前已上传过图片的解决方法：重写历史并迁移图片
+git lfs migrate import --include="*.png, *.jpg" --everything
+
+#修改历史后需要强制推送
+git push force all
+
+
 
 
