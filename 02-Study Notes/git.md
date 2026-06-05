@@ -102,6 +102,7 @@
   创建远程仓库时勾选了"Add a README"或".gitignore"
 
 ```
+
 # 先拉取远程内容（因为远程不为空）
 git pull origin main --allow-unrelated-histories
 
@@ -110,21 +111,23 @@ git pull origin main --allow-unrelated-histories
 
 # 然后再推送
 git push -u origin main
+
 ```
 
 ### 2.2 DNS解析失败
 - 报错：lookup github-cloud.s3.amazonaws.com: no such host 
 - 说明：国内 DNS 污染或网络问题，无法解析GitHub LFS 存储图片的 AWS S3 服务器地址
-```
-# 有以下四个方案解决：
-- 1.修改hosts文件（低风险）
-- 2.配置git代理（中低风险）
-- 3.更换系统DNS（安全）
-- 4.使用SSH协议（安全）
+- 有以下四个方案解决：
+> 1.修改hosts文件（低风险）
+> 2.配置git代理（中低风险）
+> 3.更换系统DNS（安全）
+> 4.使用SSH协议（安全）
 
-#在此仅介绍SSH协议使用方法
-#公钥获取：
-git remote set-url origin （公钥）
+```
+
+#在此仅介绍修改hosts文件
+1.获取可信ip
+
 
 #检查状态
 git remote -v
@@ -141,11 +144,14 @@ git push --force --all
 
 4.ssh连接失败
 -- 配置ssh代理：
+
 ```
+
 ### 2.3 删除错误上传的文件夹
   例如，我们要删除的文件夹名为B，上级文件夹为A
 
 ```
+
 #进入文件夹A，打开终端
 
 #删除操作
@@ -156,12 +162,15 @@ git commit -m "删除错误文件夹"
 
 #推送到远程
 git push
+
 ```
+
 ### 2.4 上传图片大导致的仓库臃肿
   Git官方提供Git LFS工具
   - Git存储和LFS存储分开管理
   
-  ```
+```
+
 #工具安装
 1.Windows：git for windows自带
 2.macOS:brew install git-lfs
@@ -181,6 +190,9 @@ git lfs migrate import --include="*.png, *.jpg" --everything
 
 #修改历史后需要强制推送
 git push force all
+
+```
+
 
 
 
