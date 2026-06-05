@@ -75,7 +75,7 @@
       <td>注意保存修改</td>
     </tr>
     <tr>
-      <td>添加修改到暂存区并提交</td>
+      <td>添加修改到暂存区并提交修改到本地仓库</td>
       <td><code>git add .</code><br>
           <code>git commit -m "更新说明"</code></td>
       <td>重复添加-提交流程</td>
@@ -97,7 +97,7 @@
 
 ## 二、常见问题及解决
 ### 2.1远程仓库已有文件（如README）
-#### 创建远程仓库时勾选了"Add a README"或".gitignore"
+  创建远程仓库时勾选了"Add a README"或".gitignore"
 
 ```
 # 先拉取远程内容（因为远程不为空）
