@@ -1,6 +1,6 @@
 # Git使用
 ## 一、第一次完整使用（从创建到推送）
-![内容流转](./img/deliver.png)
+![内容流转](./img/git/deliver.png)
 <table>
   <thead>
     <tr>
