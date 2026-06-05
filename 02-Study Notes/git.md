@@ -15,7 +15,7 @@
       <td></td>
     </tr>
     <tr>
-      <td>进入项目文件夹，初始化本地仓库</td>
+      <td>进入项目文件夹，打开终端，初始化本地仓库</td>
       <td><code>git init</code></td>
       <td>每个项目都有独立的本地仓库</td>
     </tr>
@@ -110,8 +110,8 @@ git pull origin main --allow-unrelated-histories
 git push -u origin main
 ```
 
-### 2.2
-    如果使用SSH（更安全，不用每次输密码）：
+### 2.2安全验证
+  如果使用SSH（更安全，不用每次输密码）：
 ```
 # 先拉取远程内容（因为远程不为空）
 git pull origin main --allow-unrelated-histories
@@ -122,5 +122,20 @@ git pull origin main --allow-unrelated-histories
 # 然后再推送
 git push -u origin main
 ```
+### 2.3删除所悟上传的文件夹
+  例如，我们要删除的文件夹名为B，上级文件夹为A
 
-### 2.3
+```
+#进入文件夹A，打开终端
+
+#删除操作
+git rm -r "B"
+
+#提交修改信息
+git commit -m "删除错误文件夹"
+
+#推送到远程
+git push
+```
+
+
