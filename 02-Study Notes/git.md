@@ -1,4 +1,5 @@
 # Git使用
+账号注册等内容见文章结尾
 ## 一、第一次完整使用（从创建到推送）
 ![内容流转](./img/git/deliver.png)
 <table>
@@ -45,7 +46,7 @@
     <tr>
       <td>将修改提交至本地仓库</td>
       <td><code>git commit -m "提交说明"</code></td>
-      <td>引号内为提交说明</td>
+      <td>引号内为提交说明，git拒绝提交说明为空的修改，绕过说明（不推荐）<code>git commit --allow -empty-message -m ""</code></td>
     </tr>
     <tr>
       <td>查看当前分支</td>
