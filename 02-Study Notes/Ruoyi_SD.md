@@ -2,13 +2,23 @@
 ## 文档简介
 - **版本**：若依3.9.2前后端分离版
 - **面向对象**：零基础想快速跑通项目的变成学习者，本教程可借助ai，低代码开发。
-- **环境配置**：JDK，IDE，MySQL，navicate,Redis，vscode，node.js
+- **环境配置**：JDK，IDE，MySQL，navicate,Redis，vscode，node.js 。文章结尾提供环境部署教程。
 - **相关技术**：springboot，Java，vue3
-- **常见问题**:本文环境配置的详细操作说明在文章结尾
 
 ## 1.若依前后端分离版本地导入
+在此提供若依官网链接：[若依官网](https://ruoyi.vip/)  
+进入官网，点击“导航栏——源码地址”可选不同版本的若依框架，本教程仅以前后端分离版为例。  
+本地导入的方式分为两种  
+
+![下载方式](./img/Ruoyi/load.png)
+- zip下载:下载解压后，软件内文件——打开文件夹
+- git克隆：打开IDE,具体操作见下图。（此处应补充git教程  
+
+![idea clone 1](./img/Ruoyi/clone1.png)
+![idea clone 2](./img/Ruoyi/clone2.png)
 ## 2.若依项目运行
 ### 2.1 运行准备
+- 
 #### 2.1.1 IDE专业版
 #### 2.1.2 IDE社区版
 ### 2.2 前端运行
