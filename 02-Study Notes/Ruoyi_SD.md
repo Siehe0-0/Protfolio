@@ -29,13 +29,27 @@ IDE连接数据库：修改配置文件，使程序连接数据库。
 
 ![程序连接数据库](./img/Ruoyi/sqlconnect0.png)
 
+⚠ 过去字符集utf8为utf8mb3别名，utf8mb4内容上完全兼容utf8mb3，因此遇到utf8可以改为utf8mb4。
+> utf8mb3:每字符最多用3字节存储，不能存emoji表情和部分罕见汉字
+
+> utf8mb4:每字符最多用4字节存储，可以存emoji表情和部分罕见汉字
+
 #### 2.1.3 执行sql文件
 - IDE专业版(IDE提供教育优惠，可先试用后申请)
 > 专业版IDE可使用内置的database工具  
 
-![idea-mysql1](./img/Ruoyi/sqlconnect1.png)
-
 - IDE社区版
+> 方法1（推荐）：使用navicat
+>
+>> 右键数据库，选择执行SQL文件，选中ruoyi项目中sql文件
+
+![sql_navicat](./img/Ruoyi/sql_navicat.png)
+
+
+> 方法2（备选）：使用终端命令行
+
+![sql_terminal1](./img/Ruoyi/sql_terminal1.png)
+ 
 
 ### 2.2 前端运行
 ### 2.3 后端运行
