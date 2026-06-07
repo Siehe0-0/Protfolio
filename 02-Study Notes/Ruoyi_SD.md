@@ -12,8 +12,8 @@
 **本地导入的方式分为两种** 
 
 ![下载方式](./img/Ruoyi/load.png)
-- zip下载:下载解压后，软件内文件——打开文件夹
-- git克隆：打开IDE,具体操作见下图。[git零基础教程](https://github.com/Siehe0-0/Protfolio/blob/master/02-Study%20Notes/git.md)  
+1. zip下载:下载解压后，软件内文件——打开文件夹
+2. git克隆：打开IDE,具体操作见下图。[Git零基础教程](https://github.com/Siehe0-0/Protfolio/blob/master/02-Study%20Notes/git.md)  
 
 ![idea clone 1](./img/Ruoyi/clone1.png)
 ![idea clone 2](./img/Ruoyi/clone2.png)
@@ -29,7 +29,7 @@ IDE连接数据库：修改配置文件，使程序连接数据库。
 
 ![程序连接数据库](./img/Ruoyi/sqlconnect0.png)
 
-⚠ 过去字符集utf8为utf8mb3别名，utf8mb4内容上完全兼容utf8mb3，因此遇到utf8可以改为utf8mb4。
+[WARNING] 过去字符集utf8为utf8mb3别名，utf8mb4内容上完全兼容utf8mb3，因此遇到utf8可以改为utf8mb4。
 > utf8mb3:每字符最多用3字节存储，不能存emoji表情和部分罕见汉字
 
 > utf8mb4:每字符最多用4字节存储，可以存emoji表情和部分罕见汉字
