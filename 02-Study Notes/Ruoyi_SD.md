@@ -29,7 +29,14 @@ IDE连接数据库：修改配置文件，使程序连接数据库。
 
 ![程序连接数据库](./img/Ruoyi/sqlconnect0.png)
 
-⚠ 过去字符集utf8为utf8mb3别名，utf8mb4内容上完全兼容utf8mb3，因此遇到utf8可以改为utf8mb4。
+⚠ **对 Java**
+> JDBC 连接 URL 中的 `characterEncoding `定义 Java 程序与 MySQL 通信时用什么编码  
+
+> 有效编码：UTF-8、ISO-8859-1、GBK 等
+
+⚠ **对 Mysql**
+> 过去字符集utf8为utf8mb3别名，utf8mb4内容上完全兼容utf8mb3，因此在MySQL遇到utf8可以改为utf8mb4。
+
 > utf8mb3:每字符最多用3字节存储，不能存emoji表情和部分罕见汉字
 
 > utf8mb4:每字符最多用4字节存储，可以存emoji表情和部分罕见汉字
@@ -54,8 +61,8 @@ IDE连接数据库：修改配置文件，使程序连接数据库。
 ![sql_terminal2](./img/Ruoyi/sql_terminal2.png)
  
 
-### 2.2 前端运行
-### 2.3 后端运行
+### 2.2 后端运行
+### 2.3 前端运行
 ## 3.认识若依项目
 ### 3.1认识前端
 ### 3.2认识后端
