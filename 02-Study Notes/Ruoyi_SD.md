@@ -46,9 +46,12 @@ IDE连接数据库：修改配置文件，使程序连接数据库。
 ![sql_navicat](./img/Ruoyi/sql_navicat.png)
 
 
-> 方法2（备选）：使用终端命令行
+> 方法2（备选）：使用终端命令行（在此仅提供一种）
+> 
+>> 右键选择sql文件所在文件夹，在终端打开，进入mysql会话，选择数据库，执行sql文件
 
 ![sql_terminal1](./img/Ruoyi/sql_terminal1.png)
+![sql_terminal2](./img/Ruoyi/sql_terminal2.png)
  
 
 ### 2.2 前端运行
