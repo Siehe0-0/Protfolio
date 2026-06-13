@@ -38,6 +38,11 @@
       <td><code>git remote -v</code></td>
       <td>显示所有远程仓库地址</td>
     </tr>
+     <tr>
+      <td>拉取远程内容（通用）</td>
+      <td><code>git pull origin main --allow-unrelated-histories</code></td>
+      <td><code>main</code>为仓库默认分支名</td>
+    </tr>
     <tr>
       <td>添加所有新增文件到暂存区</td>
       <td><code>git add .</code></td>
@@ -55,8 +60,9 @@
     </tr>
     <tr>
       <td>推送到远程仓库</td>
-      <td><code>git push -u origin master</code></td>
-      <td><code>master</code>为要推送的分支名，<br>
+      <td><code>git push -u origin main</code></td>
+      <td><code>main</code>为要推送的分支名，即默认分支<br>
+          如果改为<code>master</code>,仓库将新建<code>master<code>分支<br>
           <code>push</code>推送本地提交到远程，<br>
           第一次使用需要<code>-u</code>参数，意为设置默认上游分支</td>
     </tr>
