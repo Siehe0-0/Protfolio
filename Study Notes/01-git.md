@@ -131,7 +131,7 @@ git push -u origin main
 -在powershell执行nslookup命令查询ip地址
 -其中，8.8.8.8 是 Google 的公共 DNS 服务器，全球可用，不经过任何运营商劫持。
 -部分学校校园网较严格，请更换为热点
-nslookup github-cloud.s3.amazonaws.com 8.8.8.8
+
 
 2.修改hosts文件
 -管理员身份运行记事本打开hosts文件
