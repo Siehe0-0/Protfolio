@@ -227,19 +227,34 @@ git branch -m AAA
 #直接修改
 git branch -m BBB AAA
 
-⚠如果已经推送过远程，修改分支名后还需要同步远程分支
-# 推送新分支
+⚠如果已经推送过远程，修改分支名后还需要同步远程分支,如下：
+
+#推送新分支
 git push origin -u AAA 
-# 删除远程旧分支
+
+#删除远程旧分支
 git push origin --delete BBB 
 
 ```
 
 ### 2.8 分支合并
-  将分支 "BBB" 中内容同步更新到分支 "AAA" 中
+  当前分支为分支A，将分支 "BBB" 中内容同步更新到分支 "AAA" 中
 
 ```
-#待填充
+#查看当前分支 (带 * 的是当前分支)
+git branch
+
+#将 BBB 的内容合并到 AAA
+git merge BBB
+
+#如果有冲突，修改冲突文件
+
+#整体提交或提交冲突文件
+git add .
+git commit -m "merge BBB into AAA"
+
+#推送到远程
+git push
 
 ```
 
