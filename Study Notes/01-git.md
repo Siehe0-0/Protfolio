@@ -250,7 +250,7 @@ git branch
 #将 BBB 的内容合并到 AAA
 git merge BBB
 
-#如果有冲突，修改冲突文件
+#如果有冲突，修改冲突文件(同名文件等)
 
 #整体提交或提交冲突文件
 git add .
