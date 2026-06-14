@@ -146,6 +146,7 @@ git push -u origin main
 -ping github-cloud.s3.amazonaws.com验证是否生效
 
 3.重新尝试推送
+git push
 
 ```
 
@@ -197,15 +198,44 @@ git push force all
 
 ```
 
-### 2.5 分支改名
+### 2.5 拉取指定分支
+  假设当前分支为"BBB"， 欲拉取分支 "AAA"
+
+```
+#不切换分支直接拉取指定分支
+git pull origin AAA
+
+```
+
+### 2.6 切换分支
   将 "BBB" 分支名改为 "AAA" 
 
 ```
-#待填充
+
+#注意保存并关闭原分支文件夹
+git checkout AAA
 
 ```
 
-### 2.6 分支合并
+### 2.7 分支改名
+  将 "BBB" 分支名改为 "AAA" 
+
+```
+#当前分支改名
+git branch -m AAA
+
+#直接修改
+git branch -m BBB AAA
+
+⚠如果已经推送过远程，修改分支名后还需要同步远程分支
+# 推送新分支
+git push origin -u AAA 
+# 删除远程旧分支
+git push origin --delete BBB 
+
+```
+
+### 2.8 分支合并
   将分支 "BBB" 中内容同步更新到分支 "AAA" 中
 
 ```
