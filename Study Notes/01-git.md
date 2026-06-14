@@ -41,7 +41,9 @@
      <tr>
       <td>拉取远程内容（通用）</td>
       <td><code>git pull origin main --allow-unrelated-histories</code></td>
-      <td><code>main</code>为仓库默认分支名</td>
+      <td><code>main</code>为远程仓库默认分支名（版本有差异，自行查看）<br>
+          ⚠注：下文命令默认远程仓库默认分支名为<code>main</code>
+      </td>
     </tr>
     <tr>
       <td>添加所有新增文件到暂存区</td>
@@ -61,7 +63,7 @@
     <tr>
       <td>推送到远程仓库</td>
       <td><code>git push -u origin main</code></td>
-      <td><code>main</code>为内容推送目标分支名（仓库内可见当前版本git默认分支名）<br>
+      <td><code>main</code>为更改内容将要被推送到的远程仓库分支名<br>
           如果改为<code>master</code>,远程仓库将新建<code>master</code>分支<br>
           <code>push</code>将本地推送到远程，<br>
           第一次使用需要<code>-u</code>参数，意为设置默认上游分支</td>
