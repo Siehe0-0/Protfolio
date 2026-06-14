@@ -61,9 +61,9 @@
     <tr>
       <td>推送到远程仓库</td>
       <td><code>git push -u origin main</code></td>
-      <td><code>main</code>为内容推送目标分支名，仓库内可见默认分支名<br>
+      <td><code>main</code>为内容推送目标分支名（仓库内可见当前版本git默认分支名）<br>
           如果改为<code>master</code>,远程仓库将新建<code>master</code>分支<br>
-          <code>push</code>推送本地提交到远程，<br>
+          <code>push</code>将本地推送到远程，<br>
           第一次使用需要<code>-u</code>参数，意为设置默认上游分支</td>
     </tr>
     <tr>
