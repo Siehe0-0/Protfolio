@@ -61,8 +61,8 @@
     <tr>
       <td>推送到远程仓库</td>
       <td><code>git push -u origin main</code></td>
-      <td><code>main</code>为要推送的分支名，即默认分支<br>
-          如果改为<code>master</code>,仓库将新建<code>master</code>分支<br>
+      <td><code>main</code>为内容推送目标分支名，仓库内可见默认分支名<br>
+          如果改为<code>master</code>,远程仓库将新建<code>master</code>分支<br>
           <code>push</code>推送本地提交到远程，<br>
           第一次使用需要<code>-u</code>参数，意为设置默认上游分支</td>
     </tr>
@@ -199,7 +199,7 @@ git push force all
 ```
 
 ### 2.5 分支管理
-#### 2.5.1拉取指定分支
+#### 2.5.1 拉取指定分支
   假设当前分支为"BBB"， 欲拉取分支 "AAA"
 
 ```
@@ -238,7 +238,7 @@ git push origin --delete BBB
 
 ```
 
-#### 2.5.4分支合并
+#### 2.5.4 分支合并
   当前分支为分支A，将分支 "BBB" 中内容同步更新到分支 "AAA" 中
 
 ```
