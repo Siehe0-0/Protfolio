@@ -211,7 +211,7 @@ git pull origin AAA
 ```
 
 #### 2.5.2 切换分支
-  将 "BBB" 分支名改为 "AAA" 
+  将 分支"BBB" 切换为分支 "AAA" 
 
 ```
 
