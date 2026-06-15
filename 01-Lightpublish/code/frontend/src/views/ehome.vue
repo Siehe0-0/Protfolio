@@ -234,9 +234,11 @@ onMounted(() => {
 .ehome {
   width: 100%;
   min-height: 100vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  background: #fafafa;
 }
 
 /* 顶部导航 */
@@ -353,7 +355,10 @@ onMounted(() => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* 英雄区域 */
+/* 主内容区 */
+.ehome-main {
+  flex: 1;
+}
 .hero-section {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 80px 20px;

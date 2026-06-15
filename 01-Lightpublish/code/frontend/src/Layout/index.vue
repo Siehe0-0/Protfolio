@@ -7,11 +7,6 @@
           <div class="sidebar-header">
             <img alt="Logo" src="@/assets/logo.svg" width="40" height="40" />
             <h3 v-show="!isCollapsed">LightPublish</h3>
-            
-            <!-- 折叠按钮 -->
-            <button @click="toggleSidebar" class="collapse-btn">
-              {{ isCollapsed ? '➡️' : '⬅️' }}
-            </button>
           </div>
           
           <nav class="sidebar-nav">
@@ -52,47 +47,7 @@
               <span>📅 {{ currentDate }}</span>
             </div>
           </div>
-          
           <div class="content-body">
-             <!-- ========= 添加的测试区域 ========= -->
-            <div class="backend-test-section">
-              <h3>后端连接测试</h3>
-              
-              <!-- 后端状态显示 -->
-              <div class="server-status" :class="serverStatus.class">
-                <span class="status-icon">{{ serverStatus.icon }}</span>
-                {{ serverStatus.message }}
-              </div>
-              
-              <!-- 测试按钮 -->
-              <div class="test-buttons">
-                <button @click="testBackend" class="test-btn">
-                  {{ testing ? '测试中...' : '测试后端连接' }}
-                </button>
-                
-                <button @click="getServerInfo" class="test-btn secondary">
-                  获取服务器信息
-                </button>
-              </div>
-              
-              <!-- 结果显示 -->
-              <div v-if="testResult" class="test-result">
-                <h4>测试结果：</h4>
-                <pre>{{ testResult }}</pre>
-              </div>
-              
-              <!-- 错误显示 -->
-              <div v-if="testError" class="test-error">
-                <h4>错误信息：</h4>
-                <p>{{ testError }}</p>
-              </div>
-              
-              <!-- 后端时间 -->
-              <div v-if="serverTime" class="server-time">
-                <p>🕐 服务器时间：{{ serverTime }}</p>
-              </div>
-            </div>
-            <!-- ========= 结束测试区域 ========= -->
             <!-- 这里显示子页面 -->
             <router-view></router-view>
           </div>
@@ -110,94 +65,12 @@ const router = useRouter()
 const userInfo = ref({})
 const isCollapsed = ref(false) // 控制侧边栏是否折叠
 
-// ========= 新增的后端测试相关变量 =========
-const testing = ref(false)
-const testResult = ref(null)
-const testError = ref('')
-const serverTime = ref('')
-
-// 后端状态
-const serverStatus = computed(() => {
-  if (testError.value) {
-    return {
-      icon: '❌',
-      message: '后端连接失败',
-      class: 'status-error'
-    }
-  }
-  if (testResult.value) {
-    return {
-      icon: '✅',
-      message: '后端连接正常',
-      class: 'status-success'
-    }
-  }
-  return {
-    icon: '⏳',
-    message: '未测试后端连接',
-    class: 'status-waiting'
-  }
-})
-// ========= 结束新增 =========
-
 onMounted(() => {
   const user = localStorage.getItem('user')
   if (user) {
     userInfo.value = JSON.parse(user)
   }
-
-   // 自动测试后端连接
-  testBackend()
 })
-
-// ========= 新增的后端测试方法 =========
-// 测试后端连接
-const testBackend = async () => {
-  testing.value = true
-  testError.value = ''
-  testResult.value = null
-  
-  try {
-    const response = await fetch('http://localhost:3000/api/test')
-    
-    if (!response.ok) {
-      throw new Error(`HTTP错误: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    testResult.value = data
-    
-    // 保存服务器时间
-    if (data.data?.time) {
-      serverTime.value = data.data.time
-    }
-    
-    console.log('✅ 后端连接成功:', data)
-    
-  } catch (error) {
-    testError.value = error.message || '连接失败'
-    console.error('❌ 后端连接失败:', error)
-  } finally {
-    testing.value = false
-  }
-}
-
-// 获取服务器信息
-const getServerInfo = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/')
-    const data = await response.json()
-    
-    // 显示在测试结果区域
-    testResult.value = data
-    console.log('服务器信息:', data)
-    
-  } catch (error) {
-    testError.value = error.message
-    console.error('获取服务器信息失败:', error)
-  }
-}
-// ========= 结束新增 =========
 
 // 切换侧边栏展开/折叠
 const toggleSidebar = () => {
@@ -418,7 +291,7 @@ const logout = () => {
 
 /* 确保子页面自适应 */
 .content-body > * {
-  height: 100%; /* 子页面占满整个内容区域 */
+  min-height: 100%; /* 子页面最小占满整个内容区域 */
 }
 
 /* 响应式设计 */
@@ -444,157 +317,5 @@ const logout = () => {
     height: calc(100vh - 70px);
     padding: 1rem;
   }
-
-  
-/* ========= 新增的测试区域样式 ========= */
-.backend-test-section {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-}
-
-.backend-test-section h3 {
-  margin: 0 0 1rem 0;
-  color: #333;
-  font-size: 1.25rem;
-  border-bottom: 2px solid #f0f0f0;
-  padding-bottom: 0.5rem;
-}
-
-.server-status {
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-weight: 500;
-}
-
-.status-success {
-  background: #e8f5e8;
-  color: #2e7d32;
-  border-left: 4px solid #4caf50;
-}
-
-.status-error {
-  background: #ffebee;
-  color: #c62828;
-  border-left: 4px solid #f44336;
-}
-
-.status-waiting {
-  background: #fff3e0;
-  color: #ef6c00;
-  border-left: 4px solid #ff9800;
-}
-
-.status-icon {
-  font-size: 1.5rem;
-}
-
-.test-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.test-btn {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s;
-  flex: 1;
-  min-width: 150px;
-}
-
-.test-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(133, 91, 144, 0.2);
-}
-
-.test-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.test-btn.secondary {
-  background: #f5f5f5;
-  color: #666;
-  border: 1px solid #e0e0e0;
-}
-
-.test-btn.secondary:hover {
-  background: #e8e8e8;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.test-result,
-.test-error {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  border-radius: 8px;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-}
-
-.test-result h4,
-.test-error h4 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
-}
-
-.test-result pre {
-  margin: 0;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 12px;
-  overflow-x: auto;
-  color: #555;
-  line-height: 1.5;
-}
-
-.test-error {
-  background: #ffebee;
-  border-color: #ffcdd2;
-}
-
-.test-error h4 {
-  color: #c62828;
-}
-
-.server-time {
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background: #e3f2fd;
-  border-radius: 6px;
-  color: #1565c0;
-  font-weight: 500;
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-  .test-buttons {
-    flex-direction: column;
-  }
-  
-  .test-btn {
-    width: 100%;
-  }
-  
-  .backend-test-section {
-    padding: 1.5rem;
-    margin: 1rem;
-  }
-}
-/* ========= 结束新增样式 ========= */
 }
 </style>

@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import WelcomeView from '../views/WelcomeView.vue'
-import EHomeView from '@/views/EHomeView.vue'
-import HomeView from '@/views/HomeView.vue'
-import TLeadView from '@/views/TLeadView.vue'
+import ehome from '@/views/ehome.vue'
+import index from '@/Layout/index.vue'
+import pilot from '@/views/lead/pilot.vue'
 import LoginView from '@/views/LoginView.vue'
-import ArtListView from '@/views/ArtListView.vue'
-import ArtDetailView from '@/views/ArtDetailView.vue'
-import CreateView from '@/views/CreateView.vue'
+import list from '@/views/read/list.vue'
+import detail from '@/views/read/detail.vue'
+import edit from '@/views/write/edit.vue'
 import UserCView from '@/views/UserCView.vue'
 
 
@@ -21,32 +21,32 @@ const router = createRouter({
      {
       path: '/ehome',
       name: 'ehome',
-      component: () => import('@/views/EHomeView.vue'),
+      component: () => import('@/views/ehome.vue'),
     },
     {
       path: '/home',
       name: 'home',
-      component: () => import('@/views/HomeView.vue'),
+      component: () => import('@/Layout/index.vue'),
       children:[
          {
           path: '',
           name: 'techlead',
-          component: () => import('../views/TLeadView.vue'),    
+          component: () => import('../views/lead/pilot.vue'),    
          },
          {
           path: '/artlist',
           name: 'articlelist',
-          component: () => import('../views/ArtListView.vue'),    
+          component: () => import('../views/read/list.vue'),    
          },
           {
           path: '/artlist/:id',
           name: 'artdetail',
-          component: () => import('../views/ArtDetailView.vue'),    
+          component: () => import('../views/read/detail.vue'),    
          },
          {
           path: '/create',
           name: 'create',
-          component: () => import('../views/CreateView.vue'),
+          component: () => import('../views/write/edit.vue'),
          },
          {
           path: '/user',
@@ -66,12 +66,12 @@ const router = createRouter({
     // {
     //   path: '/artlist',
     //   name: 'articlelist',
-    //   component: () => import('../views/ArtListView.vue'),
+    //   component: () => import('../views/list.vue'),
     // },
     // {
     //   path: '/create',
     //   name: 'create',
-    //   component: () => import('../views/CreateView.vue'),
+    //   component: () => import('../views/edit.vue'),
     // },
     
   ],

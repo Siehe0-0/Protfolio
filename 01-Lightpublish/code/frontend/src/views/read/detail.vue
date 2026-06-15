@@ -6,11 +6,6 @@
       <div class="loading-spinner"></div>
       <p>正在加载文章...</p>
     </div>
-    <div class="debug-actions" v-if="!loading && article">
-  <button @click="testAllAPIs" class="debug-btn">
-    🧪 测试所有API连接
-  </button>
-</div>
 
     <!-- 错误状态 -->
     <div v-if="error" class="error-state">
@@ -114,84 +109,18 @@
     </article>
 
  
-  <!-- 评论弹窗 -->
-    <div 
-      v-if="showCommentPanel" 
-      class="comment-panel"
-      :style="panelStyle"
-    >
-      <!-- 弹窗头部 -->
-      <div class="panel-header" @mousedown="startDrag">
-        <div class="header-left">
-          <h3>💬 评论</h3>
-          <span class="comment-count">{{ commentCount || 0 }} 条评论</span>
-        </div>
-        <div class="header-right">
-          <button class="header-btn" @click="minimizePanel">
-            {{ isMinimized ? '📈' : '📉' }}
-          </button>
-          <button class="header-btn close-btn" @click="closeCommentPanel">
-            ✕
-          </button>
-        </div>
-      </div>
-
-      <!-- 弹窗内容 -->
-      <div v-if="!isMinimized" class="comment-content">
-        <!-- 发表评论区域 -->
-        <div class="comment-input-section" @mousedown.stop>
-          <textarea 
-            v-model="newComment"
-            placeholder="写下你的评论..."
-            class="comment-input"
-            rows="3"
-            @mousedown.stop
-          ></textarea>
-          <div class="input-actions">
-            <button 
-              @click="submitComment" 
-              class="submit-btn"
-              :disabled="!newComment.trim()"
-            >
-              发表评论
-            </button>
-          </div>
-        </div>
-
-        <!-- 评论列表 -->
-        <div class="comments-list" @mousedown.stop>
-          <div v-for="comment in comments" :key="comment.id" class="comment-item">
-            <div class="comment-avatar">
-              {{ comment.author?.charAt(0) || '👤' }}
-            </div>
-            <div class="comment-body">
-              <div class="comment-item-header">
-                <span class="comment-author">{{ comment.author || '匿名用户' }}</span>
-                <span class="comment-time">{{ formatDate(comment.createdAt) }}</span>
-              </div>
-              <div class="comment-text">{{ comment.content }}</div>
-              <div class="comment-actions">
-                <button @click="likeComment(comment.id)" class="comment-action-btn">
-                  ❤️ {{ comment.likes || 0 }}
-                </button>
-                <button @click="replyToComment(comment.id)" class="comment-action-btn">
-                  回复
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- 空状态 -->
-          <div v-if="comments.length === 0" class="empty-comments">
-            <div class="empty-icon">💬</div>
-            <p>还没有评论，快来抢沙发吧！</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- 调整大小的手柄 -->
-      <div class="resize-handle" @mousedown="startResize"></div>
-    </div>
+  <!-- 评论弹窗组件 -->
+  <CommentPanel
+    :visible="showCommentPanel"
+    :is-minimized="isMinimized"
+    :comments="comments"
+    :comment-count="commentCount"
+    :article-id="articleId"
+    @close="closeCommentPanel"
+    @submit-comment="handleSubmitComment"
+    @like-comment="likeComment"
+    @reply-comment="replyToComment"
+  />
     <!-- 笔记弹窗 -->
     <div 
       v-if="showNoteDialog" 
@@ -224,6 +153,7 @@ import { ref, onMounted, computed, onUnmounted} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
+import CommentPanel from '@/components/CommentPanel.vue'
 
 const API_BASE_URL = 'http://localhost:3000/api'
 const route = useRoute()
@@ -233,21 +163,15 @@ const router = useRouter()
 const loading = ref(true)
 const error = ref('')
 const article = ref(null)
+const articleId = computed(() => route.params.id)
 
 
 // 评论弹窗状态
 const showCommentPanel = ref(false)
 const isMinimized = ref(false)
-const panelPosition = ref({ x: window.innerWidth - 420, y: 100 })
-const panelSize = ref({ width: 400, height: 500 })
-const isDragging = ref(false)
-const isResizing = ref(false)
-const dragStart = ref({ x: 0, y: 0 })
-const startSize = ref({ width: 0, height: 0 })
 
 // 评论数据
 const comments = ref([])
-const newComment = ref('')
 const commentCount = ref(0)
 
 // 笔记功能
@@ -257,7 +181,6 @@ const noteContent = ref('')
 
 // 添加测试函数
 const testAllAPIs = async () => {
-  const articleId = route.params.id
   
   try {
     // 测试1: 文章API
@@ -283,40 +206,75 @@ const testAllAPIs = async () => {
   }
 }
 
-const panelStyle = computed(() => ({
-  left: `${panelPosition.value.x}px`,
-  top: `${panelPosition.value.y}px`,
-  width: `${panelSize.value.width}px`,
-  height: isMinimized.value ? '60px' : `${panelSize.value.height}px`
-}))
-
 const noteDialogStyle = computed(() => ({
   left: `${noteDialogPosition.value.x}px`,
   top: `${noteDialogPosition.value.y}px`
 }))
 
+// 处理评论提交（来自组件的事件）
+const handleSubmitComment = async (content) => {
+  if (!content.trim()) {
+    alert('请输入评论内容')
+    return
+  }
+  
+  try {
+    const commentData = {
+      articleId: articleId.value,
+      content: content,
+      author: '当前用户'  // 这里可以改成真实用户名
+    }
+    
+    console.log('正在发表评论...', commentData)
+    
+    const response = await fetch('http://localhost:3000/api/comments', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(commentData)
+    })
+    
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('API返回错误:', errorText)
+      throw new Error(`HTTP错误: ${response.status}`)
+    }
+    
+    const result = await response.json()
+    console.log('评论发表结果:', result)
+    
+    if (result.code === 200) {
+      await loadComments(articleId.value)
+      alert('评论发表成功！')
+    } else {
+      alert(result.message || '发表失败，请重试')
+    }
+    
+  } catch (err) {
+    console.error('发表评论失败:', err)
+    
+    if (err.message.includes('Failed to fetch')) {
+      alert('无法连接到服务器，请检查后端是否启动')
+    } else {
+      alert('评论发表失败，请稍后重试')
+    }
+  }
+}
+
 
 onMounted(() => {
-  const articleId = route.params.id
-  if (articleId) {
-    loadArticle(articleId)
-    loadComments(articleId)  // 加载评论数据
+  if (articleId.value) {
+    loadArticle(articleId.value)
+    loadComments(articleId.value)
   } else {
     error.value = '文章ID不存在'
     loading.value = false
   }
-    // 添加全局事件监听
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
-  document.addEventListener('touchmove', handleMouseMove)
-  document.addEventListener('touchend', handleMouseUp)
 })
 
 onUnmounted(() => {
-  document.removeEventListener('mousemove', handleMouseMove)
-  document.removeEventListener('mouseup', handleMouseUp)
-  document.removeEventListener('touchmove', handleMouseMove)
-  document.removeEventListener('touchend', handleMouseUp)
+  // 清理由组件内部处理
 })
 
 
@@ -404,148 +362,11 @@ const closeCommentPanel = () => {
   showCommentPanel.value = false
 }
 
-// 最小化弹窗
-const minimizePanel = () => {
-  isMinimized.value = !isMinimized.value
-}
-
-// 开始拖拽
-const startDrag = (e) => {
-  e.preventDefault()
-  isDragging.value = true
-  const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX
-  const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY
-  dragStart.value = {
-    x: clientX - panelPosition.value.x,
-    y: clientY - panelPosition.value.y
-  }
-}
-
-// 开始调整大小
-const startResize = (e) => {
-  e.preventDefault()
-  e.stopPropagation()
-  isResizing.value = true
-  dragStart.value = {
-    x: e.clientX,
-    y: e.clientY
-  }
-  startSize.value = { ...panelSize.value }
-}
-
-// 处理鼠标移动
-const handleMouseMove = (e) => {
-  if (!isDragging.value && !isResizing.value) return
-  
-  e.preventDefault()
-  const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX
-  const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY
-  
-  if (isDragging.value) {
-    panelPosition.value = {
-      x: clientX - dragStart.value.x,
-      y: clientY - dragStart.value.y
-    }
-  }
-  
-  if (isResizing.value) {
-    const deltaX = clientX - dragStart.value.x
-    const deltaY = clientY - dragStart.value.y
-    
-    panelSize.value = {
-      width: Math.max(300, startSize.value.width + deltaX),
-      height: Math.max(200, startSize.value.height + deltaY)
-    }
-  }
-}
-
-// 处理鼠标抬起
-const handleMouseUp = () => {
-  isDragging.value = false
-  isResizing.value = false
-}
-// 发表评论（修改为真实API调用）
-const submitComment = async () => {
-  if (!newComment.value.trim()) {
-    alert('请输入评论内容')
-    return
-  }
-  
-  try {
-    const commentData = {
-      articleId: route.params.id,
-      content: newComment.value,
-      author: '当前用户'  // 这里可以改成真实用户名
-    }
-    
-    console.log('正在发表评论...', commentData)
-    
-    // 1. 调用真实API提交评论
-    const response = await fetch('http://localhost:3000/api/comments', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(commentData)
-    })
-    
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error('API返回错误:', errorText)
-      throw new Error(`HTTP错误: ${response.status}`)
-    }
-    
-    const result = await response.json()
-    console.log('评论发表结果:', result)
-    
-    if (result.code === 200) {
-      // 2. 发表成功后清空输入框
-      newComment.value = ''
-      
-      // 3. 重新加载评论列表（显示新发表的评论）
-      await loadComments(route.params.id)
-      
-      // 4. 给用户成功提示
-      alert('评论发表成功！')
-    } else {
-      alert(result.message || '发表失败，请重试')
-    }
-    
-  } catch (err) {
-    console.error('发表评论失败:', err)
-    
-    // 根据错误类型给出不同提示
-    if (err.message.includes('Failed to fetch')) {
-      alert('无法连接到服务器，请检查：\n1. 后端服务器是否启动\n2. 网络连接是否正常')
-    } else if (err.message.includes('HTTP错误')) {
-      alert(`服务器错误：${err.message}`)
-    } else {
-      alert('评论发表失败，请稍后重试')
-    }
-  }
-}
-
-// 点赞评论
-const likeComment = (commentId) => {
-  const comment = comments.value.find(c => c.id === commentId)
-  if (comment) {
-    comment.likes = (comment.likes || 0) + 1
-  }
-}
-
 // 回复评论
 const replyToComment = (commentId) => {
-  const comment = comments.value.find(c => c.id === commentId)
-  if (comment) {
-    newComment.value = `回复 ${comment.author}：`
-    // 聚焦到输入框
-    const textarea = document.querySelector('.comment-input')
-    if (textarea) {
-      setTimeout(() => {
-        textarea.focus()
-      }, 100)
-    }
-  }
+  // 注意：这个事件现在由 CommentPanel 组件触发
+  // 如果需要处理回复逻辑，可以在这里添加
+  console.log('回复评论:', commentId)
 }
 
 // 双击页面处理
@@ -753,11 +574,11 @@ const renderContent = (content) => {
 
 /* 文章内容区域 */
 .article-content {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   background: white;
   border-radius: 12px;
-  padding: 2rem;
+  padding: 2.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   cursor: text;
   position: relative;
@@ -1023,237 +844,6 @@ const renderContent = (content) => {
   text-align: center;
 }
 
-/* ============ 评论弹窗样式 ============ */
-.comment-panel {
-  position: fixed;
-  z-index: 1000;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  min-width: 300px;
-  min-height: 200px;
-  resize: both;
-}
-
-.panel-header {
-  padding: 1rem;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: move;
-  user-select: none;
-}
-
-.header-left h3 {
-  margin: 0;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.comment-count {
-  font-size: 12px;
-  opacity: 0.9;
-}
-
-.header-right {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.header-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transition: background 0.2s;
-}
-
-.header-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.close-btn:hover {
-  background: #ff5252;
-}
-
-.comment-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.comment-input-section {
-  padding: 1rem;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.comment-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 14px;
-  resize: vertical;
-  font-family: inherit;
-  margin-bottom: 0.75rem;
-}
-
-.comment-input:focus {
-  outline: none;
-  border-color: #94b4eb;
-  box-shadow: 0 0 0 2px rgba(148, 180, 235, 0.2);
-}
-
-.input-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.submit-btn {
-  padding: 0.5rem 1.5rem;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.submit-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(133, 91, 144, 0.2);
-}
-
-.submit-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.comments-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
-}
-
-.comment-item {
-  display: flex;
-  gap: 0.75rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.comment-item:last-child {
-  border-bottom: none;
-}
-
-.comment-avatar {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  flex-shrink: 0;
-}
-
-.comment-body {
-  flex: 1;
-}
-
-.comment-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.comment-author {
-  font-weight: 600;
-  color: #333;
-  font-size: 14px;
-}
-
-.comment-time {
-  font-size: 12px;
-  color: #999;
-}
-
-.comment-text {
-  font-size: 14px;
-  line-height: 1.5;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.comment-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.comment-action-btn {
-  padding: 0.25rem 0.75rem;
-  background: #f5f5f5;
-  border: none;
-  border-radius: 12px;
-  font-size: 12px;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.comment-action-btn:hover {
-  background: #e0e0e0;
-}
-
-.empty-comments {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 1rem;
-  color: #999;
-  text-align: center;
-}
-
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  opacity: 0.3;
-}
-
-.resize-handle {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
-  cursor: se-resize;
-  background: linear-gradient(135deg, transparent 50%, #94b4eb 50%);
-  border-bottom-right-radius: 12px;
-}
-
 /* ============ 笔记弹窗样式 ============ */
 .note-dialog {
   position: fixed;
@@ -1370,15 +960,6 @@ const renderContent = (content) => {
   .action-btn {
     width: 100%;
     justify-content: center;
-  }
-  
-  .comment-panel {
-    left: 1rem !important;
-    right: 1rem !important;
-    top: 50% !important;
-    transform: translateY(-50%);
-    width: calc(100% - 2rem) !important;
-    max-width: none !important;
   }
   
   .note-dialog {
