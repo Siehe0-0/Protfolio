@@ -3,6 +3,7 @@
 // 1. 引入需要的包
 const express = require('express');
 const cors = require('cors');
+const crypto = require('crypto');
 const db = require('./config/db');  // 添加数据库连接
 
 // 2. 引入路由文件
@@ -15,7 +16,105 @@ const app = express();
 app.use(cors());  // 允许跨域
 app.use(express.json());  // 解析JSON格式的请求体
 
-// 5. 测试路由 - 看看服务器是否正常工作
+// ===== 工具函数 =====
+// 简单密码哈希（使用 SHA256）
+const hashPassword = (password) => {
+  return crypto.createHash('sha256').update(password + 'lightpublish_salt').digest('hex');
+};
+
+// 生成简单 token
+const generateToken = (userId, phone) => {
+  const data = `${userId}:${phone}:${Date.now()}`;
+  return crypto.createHash('sha256').update(data + 'token_secret').digest('hex');
+};
+
+// ===== 认证接口 =====
+
+// 注册接口
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { phone, password } = req.body;
+
+    // 基本验证
+    if (!phone || !password) {
+      return res.status(400).json({ code: 400, message: '手机号和密码不能为空' });
+    }
+    if (!/^1[3-9]\d{9}$/.test(phone)) {
+      return res.status(400).json({ code: 400, message: '手机号格式不正确' });
+    }
+    if (password.length < 6 || password.length > 20) {
+      return res.status(400).json({ code: 400, message: '密码长度为6-20位' });
+    }
+
+    // 检查手机号是否已注册
+    const [existing] = await db.query('SELECT id FROM users WHERE phone = ?', [phone]);
+    if (existing.length > 0) {
+      return res.status(409).json({ code: 409, message: '手机号已注册' });
+    }
+
+    // 创建用户
+    const hashedPassword = hashPassword(password);
+    const username = '用户' + phone.slice(-4);
+    const [result] = await db.query(
+      'INSERT INTO users (phone, password, username, created_at) VALUES (?, ?, ?, NOW())',
+      [phone, hashedPassword, username]
+    );
+
+    const userId = result.insertId;
+    const token = generateToken(userId, phone);
+    const user = { id: userId, phone, username };
+
+    res.json({
+      code: 200,
+      message: '注册成功',
+      data: { token, user }
+    });
+
+  } catch (error) {
+    console.error('注册失败:', error);
+    res.status(500).json({ code: 500, message: '服务器错误' });
+  }
+});
+
+// 登录接口
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { phone, password } = req.body;
+
+    // 基本验证
+    if (!phone || !password) {
+      return res.status(400).json({ code: 400, message: '手机号和密码不能为空' });
+    }
+
+    // 查找用户
+    const [users] = await db.query('SELECT * FROM users WHERE phone = ?', [phone]);
+    if (users.length === 0) {
+      return res.status(404).json({ code: 404, message: '用户不存在' });
+    }
+
+    const user = users[0];
+
+    // 验证密码
+    const hashedPassword = hashPassword(password);
+    if (user.password !== hashedPassword) {
+      return res.status(401).json({ code: 401, message: '手机号或密码错误' });
+    }
+
+    // 生成 token
+    const token = generateToken(user.id, phone);
+    const userInfo = { id: user.id, phone: user.phone, username: user.username };
+
+    res.json({
+      code: 200,
+      message: '登录成功',
+      data: { token, user: userInfo }
+    });
+
+  } catch (error) {
+    console.error('登录失败:', error);
+    res.status(500).json({ code: 500, message: '服务器错误' });
+  }
+});
 app.get('/', (req, res) => {
   res.json({
     code: 200,
