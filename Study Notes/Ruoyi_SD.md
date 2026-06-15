@@ -73,10 +73,15 @@ IDE连接数据库：修改配置文件，使程序连接数据库。
 ### 2.3 前端运行
 - [Vscode从安装到入门](补链接)
 - [Node.js从安装到入门](补链接)
- 
+
+#### 2.3.1 Vue3版本前端的获取
+- 查看ruoyi-ui文件夹内`package.json`文件中`dependencies`字段可知，若依前后端分离版默认Vue2，需替换为Vue3
+- [Vue3版本前端获取](https://gitcode.com/yangzongzhuan/RuoYi-Vue3)
+
 ![vs1](./img/Ruoyi/vs1.png)
 ![vs2](./img/Ruoyi/vs2.png)
 
+#### 2.3.2 依赖安装与运行
 **注**：node.js安装一次即可，每个项目都需要安装依赖  
 `npm install`或简写`npm i`安装，初次安装会有比较慢的情况，也可以选择镜像网站  
 `npm run dev`尝试运行前端
