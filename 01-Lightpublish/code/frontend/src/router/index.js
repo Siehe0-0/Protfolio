@@ -7,7 +7,7 @@ import LoginView from '@/views/LoginView.vue'
 import list from '@/views/read/list.vue'
 import detail from '@/views/read/detail.vue'
 import edit from '@/views/write/edit.vue'
-import UserCView from '@/views/UserCView.vue'
+import user from '@/views/user/user.vue'
 
 
 const router = createRouter({
@@ -51,7 +51,7 @@ const router = createRouter({
          {
           path: '/user',
           name: 'usercenter',
-          component: () => import('../views/UserCView.vue'),
+          component: () => import('../views/user/user.vue'),
          },
       ]
     },

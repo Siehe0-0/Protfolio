@@ -6,7 +6,7 @@
         <aside class="sidebar">
           <div class="sidebar-header">
             <img alt="Logo" src="@/assets/logo.svg" width="40" height="40" />
-            <h3 v-show="!isCollapsed">LightPublish</h3>
+            <h3 v-show="!isCollapsed">Qcloud</h3>
           </div>
           
           <nav class="sidebar-nav">
@@ -119,7 +119,7 @@ const logout = () => {
 /* 侧边栏样式 */
 .sidebar {
   width: 260px;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
+  background: linear-gradient(135deg, #94b4eb 0%, #5b908dff 100%);
   color: white;
   display: flex;
   flex-direction: column;

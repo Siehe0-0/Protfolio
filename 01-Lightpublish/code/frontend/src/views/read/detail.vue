@@ -17,12 +17,8 @@
     </div>
 
     <!-- 文章内容 -->
-    <article 
-      v-if="!loading && article" 
-      class="article-content"
-      @dblclick="handleDoubleClick"  <!-- 添加双击事件监听 -->
-    >
-      <!-- 文章标题区域 -->
+    <article v-if="!loading && article"  class="article-content" @dblclick="handleDoubleClick"  >
+      <!-- 标题区域 -->
       <div class="article-title-section">
         <h1 class="article-title">{{ article.title }}</h1>
         <div class="title-underline"></div>
@@ -574,7 +570,6 @@ const renderContent = (content) => {
 
 /* 文章内容区域 */
 .article-content {
-  max-width: 1000px;
   margin: 0 auto;
   background: white;
   border-radius: 12px;
