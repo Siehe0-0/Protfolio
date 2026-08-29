@@ -102,14 +102,3 @@ IDE连接数据库：修改配置文件，使程序连接数据库。
 
 
 
-
-mysql -u root -p
-
-# 输入密码后，选择数据库
-
-use ry-vue
-
-# 粘贴建表SQL（可以分条执行）
-
-source /path/to/your/create\_tables.sql;
-
