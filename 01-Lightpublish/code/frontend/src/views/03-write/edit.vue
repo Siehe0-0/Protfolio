@@ -108,13 +108,6 @@
                   <div class="word-count">
                     字数: {{ wordCount }}
                   </div>
-                  <button 
-                    @click="togglePreview" 
-                    class="preview-toggle-btn"
-                    :class="{ active: previewVisible }"
-                  >
-                    {{ previewVisible ? '收起预览' : '展开预览' }}
-                  </button>
                 </div>
               </div>
               
@@ -217,7 +210,8 @@ const commonTags = ref(['前端', '后端', 'JavaScript', 'Vue', 'React', 'Node.
 // 计算属性
 const wordCount = computed(() => {
   if (!article.value.content) return 0
-  return article.value.content.trim().replace(/\s+/g, ' ').split(' ').length
+  // 去除所有空白字符后计算字符数（支持中英文）
+  return article.value.content.replace(/\s+/g, '').length
 })
 
 const readingTime = computed(() => {
@@ -608,7 +602,7 @@ const cancelLeave = () => {
 }
 
 .toggle-btn {
-  background: #855b90;
+  background: #9fe88eff;
   color: white;
   border: none;
   width: 24px;
@@ -624,7 +618,7 @@ const cancelLeave = () => {
 }
 
 .toggle-btn:hover {
-  background: #7a4f86;
+  background: #a4eaaaff;
   width: 28px;
 }
 
@@ -681,8 +675,8 @@ const cancelLeave = () => {
 
 .toolbar-group button:hover {
   background: #f0f0f0;
-  border-color: #855b90;
-  color: #855b90;
+  border-color: #aeed9cff;
+  color: #a7e38dff;
 }
 
 .toolbar-right {
@@ -715,9 +709,9 @@ const cancelLeave = () => {
 }
 
 .preview-toggle-btn.active {
-  background: #855b90;
+  background: #aeed9cff;
   color: white;
-  border-color: #855b90;
+  border-color: #aeed9cff;
 }
 
 /* Markdown 编辑器 */

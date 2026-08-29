@@ -173,72 +173,59 @@ const currentPage = ref(1)
 const pageSize = 5
 const showHistory = ref(false)
 
-// 模拟数据
-const articles = ref([
-  {
-    id: 1,
-    title: 'Vue 3.0 新特性详解',
-    summary: '本文详细介绍了 Vue 3.0 的新特性，包括 Composition API、性能优化等...',
-    tags: ['Vue', '前端', 'JavaScript'],
-    status: 'published',
-    publishTime: '2024-01-15T10:30:00',
-    updateTime: '2024-01-20T14:20:00',
-    views: 156
-  },
-  {
-    id: 2,
-    title: 'TypeScript 类型系统深入理解',
-    summary: '深入探讨 TypeScript 的类型系统，包括泛型、类型推断、条件类型等高级特性...',
-    tags: ['TypeScript', '前端', '编程'],
-    status: 'published',
-    publishTime: '2024-01-10T09:15:00',
-    views: 89
-  },
-  {
-    id: 3,
-    title: 'Node.js 性能优化指南',
-    summary: '分享 Node.js 应用性能优化的实战经验和技巧...',
-    tags: ['Node.js', '后端', '性能优化'],
-    status: 'draft',
-    publishTime: '2024-01-18T16:45:00',
-    views: 42
-  },
-  {
-    id: 4,
-    title: '现代 CSS 布局方案',
-    summary: '介绍 Flexbox、Grid 等现代 CSS 布局技术的使用方法...',
-    tags: ['CSS', '前端', '布局'],
-    status: 'published',
-    publishTime: '2024-01-05T11:20:00',
-    updateTime: '2024-01-08T10:10:00',
-    views: 203
-  },
-  {
-    id: 5,
-    title: '微前端架构实践',
-    summary: '探讨微前端架构的设计理念和实现方案...',
-    tags: ['架构', '前端', '微服务'],
-    status: 'published',
-    publishTime: '2024-01-22T14:30:00',
-    views: 76
-  }
-])
+// 真实数据（从 API 获取）
+const articles = ref([])
+const availableTags = ref([])
 
-// 浏览历史数据
-const browseHistory = ref([
-  {
-    id: 1,
-    articleId: 2,
-    articleTitle: 'TypeScript 类型系统深入理解',
-    viewTime: '2024-01-25T15:30:00'
-  },
-  {
-    id: 2,
-    articleId: 4,
-    articleTitle: '现代 CSS 布局方案',
-    viewTime: '2024-01-24T10:20:00'
+// 浏览历史数据（从 API 获取）
+const browseHistory = ref([])
+
+// 加载文章列表
+const loadArticles = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/articles')
+    if (!response.ok) throw new Error('获取文章失败')
+    
+    const result = await response.json()
+    if (result.code === 200) {
+      articles.value = result.data || []
+      // 提取所有标签
+      const tags = new Set()
+      articles.value.forEach(article => {
+        if (article.tags) {
+          article.tags.forEach(tag => tags.add(tag))
+        }
+      })
+      availableTags.value = Array.from(tags)
+    }
+  } catch (error) {
+    console.error('加载文章失败:', error)
   }
-])
+}
+
+// 加载浏览历史
+const loadBrowseHistory = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    if (!user.id) return
+    
+    const response = await fetch(`http://localhost:3000/api/users/${user.id}/history`)
+    if (!response.ok) throw new Error('获取历史失败')
+    
+    const result = await response.json()
+    if (result.code === 200) {
+      browseHistory.value = result.data || []
+    }
+  } catch (error) {
+    console.error('加载浏览历史失败:', error)
+  }
+}
+
+// 页面加载时获取数据
+onMounted(() => {
+  loadArticles()
+  loadBrowseHistory()
+})
 
 // 状态映射
 const statusMap = {
@@ -248,14 +235,6 @@ const statusMap = {
 }
 
 // 计算属性
-const availableTags = computed(() => {
-  const tags = new Set()
-  articles.value.forEach(article => {
-    article.tags.forEach(tag => tags.add(tag))
-  })
-  return Array.from(tags)
-})
-
 const filteredArticles = computed(() => {
   let result = articles.value
   
@@ -362,9 +341,7 @@ const formatTime = (timeString) => {
   })
 }
 
-onMounted(() => {
-  // 可以在这里加载实际数据
-})
+
 </script>
 
 <style scoped>
@@ -408,13 +385,13 @@ onMounted(() => {
 
 .search-box input:focus {
   outline: none;
-  border-color: #855b90;
-  box-shadow: 0 0 0 2px rgba(133, 91, 144, 0.1);
+  border-color: #7FBB8A;
+  box-shadow: 0 0 0 2px rgba(127, 187, 138, 0.1);
 }
 
 .search-btn {
   padding: 0 1.5rem;
-  background: #94b4eb;
+  background: linear-gradient(135deg, #7FBB8A 0%, #6AA875 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -424,7 +401,7 @@ onMounted(() => {
 }
 
 .search-btn:hover {
-  background: #855b90;
+  background: linear-gradient(135deg, #6AA875 0%, #5A9865 100%);
   transform: translateY(-1px);
 }
 
@@ -463,18 +440,18 @@ onMounted(() => {
 }
 
 .tag-btn.active {
-  background: #855b90;
+  background: linear-gradient(135deg, #7FBB8A 0%, #6AA875 100%);
   color: white;
-  border-color: #855b90;
+  border-color: #7FBB8A;
 }
 
 /* 足迹按钮 */
 .history-btn {
   padding: 0.75rem 1.5rem;
-  background: #f0f7ff;
-  border: 1px solid #d0e3ff;
+  background: linear-gradient(135deg, #FEE5D9 0%, #FDD5C4 100%);
+  border: 1px solid #FCC4B0;
   border-radius: 8px;
-  color: #2c5282;
+  color: #8B6F47;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -485,7 +462,7 @@ onMounted(() => {
 }
 
 .history-btn:hover {
-  background: #e1f0ff;
+  background: linear-gradient(135deg, #FDD5C4 0%, #FCC4B0 100%);
   transform: translateY(-1px);
 }
 
@@ -517,7 +494,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: stretch;
   gap: 2rem;
-  border-left: 4px solid #94b4eb;
+  border-left: 4px solid #7FBB8A;
   transition: all 0.3s;
   cursor: pointer;
 }
@@ -525,7 +502,7 @@ onMounted(() => {
 .article-card-link:hover .article-card {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-left-color: #855b90;
+  border-left-color: #6AA875;
 }
 
 .article-card.draft {
@@ -603,17 +580,17 @@ onMounted(() => {
 
 .tag {
   padding: 0.25rem 0.75rem;
-  background: #f0f7ff;
+  background: linear-gradient(135deg, #F0F9F2 0%, #E8F5EB 100%);
   border-radius: 12px;
   font-size: 12px;
-  color: #2c5282;
+  color: #5A9865;
   cursor: pointer;
   transition: all 0.2s;
   display: inline-block;
 }
 
 .tag:hover {
-  background: #e1f0ff;
+  background: linear-gradient(135deg, #E8F5EB 0%, #D5EDDC 100%);
   transform: translateY(-1px);
 }
 
@@ -642,9 +619,9 @@ onMounted(() => {
 }
 
 .action-btn.edit:hover {
-  background: #e3f2fd;
-  border-color: #2196f3;
-  color: #2196f3;
+  background: linear-gradient(135deg, #F0F9F2 0%, #E8F5EB 100%);
+  border-color: #7FBB8A;
+  color: #6AA875;
 }
 
 .action-btn.delete:hover {
@@ -656,7 +633,7 @@ onMounted(() => {
 /* 发布时间区域 */
 .publish-time {
   width: 160px;
-  background: linear-gradient(135deg, #f0f7ff 0%, #fff0f7 100%);
+  background: linear-gradient(135deg, #F0F9F2 0%, #FEE5D9 100%);
   border-radius: 8px;
   padding: 1rem;
   display: flex;
@@ -664,13 +641,13 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   text-align: center;
-  border: 1px solid #e8d0e0;
+  border: 1px solid #D5EDDC;
   flex-shrink: 0;
 }
 
 .time-label {
   font-size: 12px;
-  color: #855b90;
+  color: #7FBB8A;
   margin-bottom: 0.25rem;
   font-weight: 500;
 }
@@ -721,9 +698,9 @@ onMounted(() => {
 }
 
 .page-btn:hover:not(:disabled) {
-  background: #855b90;
+  background: linear-gradient(135deg, #7FBB8A 0%, #6AA875 100%);
   color: white;
-  border-color: #855b90;
+  border-color: #7FBB8A;
 }
 
 .page-btn:disabled {

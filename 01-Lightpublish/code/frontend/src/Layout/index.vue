@@ -42,9 +42,43 @@
             <button @click="toggleSidebar" class="menu-toggle">
               ☰
             </button>
-            <h2>欢迎回来！{{ userInfo.name || '用户' }}</h2>
-            <div class="user-info">
-              <span>📅 {{ currentDate }}</span>
+            
+            <!-- 功能图标区 -->
+            <div class="header-actions">
+              <button class="action-icon-btn" title="定时">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="13" r="8"/>
+                  <path d="M12 9v4l2 2"/>
+                  <path d="M5 3L2 6"/>
+                  <path d="M22 6l-3-3"/>
+                  <path d="M12 5V3"/>
+                </svg>
+              </button>
+              <button class="action-icon-btn" title="主题">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="5"/>
+                  <path d="M12 1v2"/>
+                  <path d="M12 21v2"/>
+                  <path d="M4.22 4.22l1.42 1.42"/>
+                  <path d="M18.36 18.36l1.42 1.42"/>
+                  <path d="M1 12h2"/>
+                  <path d="M21 12h2"/>
+                  <path d="M4.22 19.78l1.42-1.42"/>
+                  <path d="M18.36 5.64l1.42-1.42"/>
+                </svg>
+              </button>
+              <button class="action-icon-btn" title="通知">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+              </button>
+              <button class="action-icon-btn" title="消息">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </button>
             </div>
           </div>
           <div class="content-body">
@@ -119,7 +153,7 @@ const logout = () => {
 /* 侧边栏样式 */
 .sidebar {
   width: 260px;
-  background: linear-gradient(135deg, #94b4eb 0%, #5b908dff 100%);
+  background: linear-gradient(135deg, #7FBB8A 0%, #FEE5D9 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -267,6 +301,35 @@ const logout = () => {
 
 .menu-toggle:hover {
   background: #f5f5f5;
+}
+
+/* 功能图标区 */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto; /* 靠右对齐 */
+}
+
+.action-icon-btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.action-icon-btn:hover {
+  background: linear-gradient(135deg, #F0F9F2 0%, #E8F5EB 100%);
+  border-color: #7FBB8A;
+  color: #7FBB8A;
+  transform: translateY(-2px);
 }
 
 .content-header h2 {

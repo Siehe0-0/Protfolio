@@ -138,60 +138,41 @@ const isLoggedIn = computed(() => {
   return !!localStorage.getItem('token')
 })
 
-// 文章数据
-const articles = ref([
-  {
-    id: 1,
-    title: 'Vue 3 Composition API 完全指南',
-    excerpt: '详细介绍 Vue 3 的 Composition API 使用方法和最佳实践',
-    author: '张明',
-    date: '2024-01-15',
-    reads: 1245,
-    tags: ['Vue', '前端', 'JavaScript']
-  },
-  {
-    id: 2,
-    title: 'TypeScript 类型体操入门',
-    excerpt: '学习 TypeScript 高级类型和类型编程的基础知识',
-    author: '李华',
-    date: '2024-01-12',
-    reads: 892,
-    tags: ['TypeScript', '编程']
-  },
-  {
-    id: 3,
-    title: 'Node.js 性能优化实战',
-    excerpt: '通过实际案例讲解 Node.js 应用的性能优化技巧',
-    author: '王强',
-    date: '2024-01-10',
-    reads: 756,
-    tags: ['Node.js', '后端', '性能']
-  },
-  {
-    id: 4,
-    title: '现代 CSS 布局完全指南',
-    excerpt: 'Flexbox、Grid 和现代 CSS 布局技术的全面解析',
-    author: '赵敏',
-    date: '2024-01-08',
-    reads: 543,
-    tags: ['CSS', '前端', '设计']
-  },
-  {
-    id: 5,
-    title: '现代 CSS 布局完全指南',
-    excerpt: 'Flexbox、Grid 和现代 CSS 布局技术的全面解析',
-    author: '赵敏',
-    date: '2024-01-08',
-    reads: 543,
-    tags: ['CSS', '前端', '设计']
-  }
-])
+// 文章数据（从 API 获取）
+const articles = ref([])
 
-// 热门标签
-const hotTags = ref([
-  'Vue', 'React', 'JavaScript', 'TypeScript', 'Node.js',
-  'CSS', '算法', '数据库', '架构', 'DevOps'
-])
+// 热门标签（从 API 获取）
+const hotTags = ref([])
+
+// 加载首页数据
+const loadHomeData = async () => {
+  try {
+    // 获取最新文章
+    const articlesRes = await fetch('http://localhost:3000/api/articles?limit=10&sort=newest')
+    if (articlesRes.ok) {
+      const articlesData = await articlesRes.json()
+      if (articlesData.code === 200) {
+        articles.value = articlesData.data
+      }
+    }
+    
+    // 获取热门标签
+    const tagsRes = await fetch('http://localhost:3000/api/tags/hot?limit=10')
+    if (tagsRes.ok) {
+      const tagsData = await tagsRes.json()
+      if (tagsData.code === 200) {
+        hotTags.value = tagsData.data
+      }
+    }
+  } catch (error) {
+    console.error('加载首页数据失败:', error)
+  }
+}
+
+// 页面加载时获取数据
+onMounted(() => {
+  loadHomeData()
+})
 
 // 搜索功能
 const handleSearch = () => {
@@ -360,7 +341,7 @@ onMounted(() => {
   flex: 1;
 }
 .hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #ace39b9c 100%);
   padding: 80px 20px;
   text-align: center;
   color: white;

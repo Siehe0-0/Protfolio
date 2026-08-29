@@ -13,9 +13,9 @@
       <form v-if="isLoginMode" @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
           <label>手机号</label>
-          <input 
-            v-model="loginForm.phone" 
-            type="tel" 
+          <input
+            v-model="loginForm.phone"
+            type="tel"
             placeholder="请输入手机号"
             :class="{ error: loginErrors.phone }"
           />
@@ -24,9 +24,9 @@
 
         <div class="form-group">
           <label>密码</label>
-          <input 
-            v-model="loginForm.password" 
-            type="password" 
+          <input
+            v-model="loginForm.password"
+            type="password"
             placeholder="请输入密码"
             :class="{ error: loginErrors.password }"
           />
@@ -45,9 +45,9 @@
       <form v-else @submit.prevent="handleRegister" class="register-form">
         <div class="form-group">
           <label>手机号</label>
-          <input 
-            v-model="registerForm.phone" 
-            type="tel" 
+          <input
+            v-model="registerForm.phone"
+            type="tel"
             placeholder="请输入手机号"
             :class="{ error: registerErrors.phone }"
           />
@@ -55,10 +55,19 @@
         </div>
 
         <div class="form-group">
+          <label>用户名（可选）</label>
+          <input
+            v-model="registerForm.username"
+            type="text"
+            placeholder="不填则自动生成"
+          />
+        </div>
+
+        <div class="form-group">
           <label>设置密码</label>
-          <input 
-            v-model="registerForm.password" 
-            type="password" 
+          <input
+            v-model="registerForm.password"
+            type="password"
             placeholder="请设置6-20位密码"
             :class="{ error: registerErrors.password }"
           />
@@ -67,9 +76,9 @@
 
         <div class="form-group">
           <label>确认密码</label>
-          <input 
-            v-model="registerForm.confirmPassword" 
-            type="password" 
+          <input
+            v-model="registerForm.confirmPassword"
+            type="password"
             placeholder="请再次输入密码"
             :class="{ error: registerErrors.confirmPassword }"
           />
@@ -92,7 +101,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
@@ -100,12 +109,11 @@ const router = useRouter()
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue', 'close'])
 
-// 模式状态
 const isLoginMode = ref(true)
 
 // 表单数据
 const loginForm = reactive({ phone: '', password: '' })
-const registerForm = reactive({ phone: '', password: '', confirmPassword: '' })
+const registerForm = reactive({ phone: '', username: '', password: '', confirmPassword: '' })
 
 // 错误信息
 const loginErrors = reactive({ phone: '', password: '' })
@@ -213,6 +221,7 @@ const handleRegister = async () => {
   try {
     const response = await axios.post('http://localhost:3000/api/auth/register', {
       phone: registerForm.phone,
+      username: registerForm.username || undefined,
       password: registerForm.password
     })
     const { token, user } = response.data.data
@@ -349,7 +358,7 @@ input.error {
 .submit-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #ace39b9c 100%);
   color: white;
   border: none;
   border-radius: 8px;

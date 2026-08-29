@@ -2,12 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import WelcomeView from '../views/WelcomeView.vue'
 import ehome from '@/views/ehome.vue'
 import index from '@/Layout/index.vue'
-import pilot from '@/views/lead/pilot.vue'
 import LoginView from '@/views/LoginView.vue'
-import list from '@/views/read/list.vue'
-import detail from '@/views/read/detail.vue'
-import edit from '@/views/write/edit.vue'
-import user from '@/views/user/user.vue'
+
+import pilot from '@/views/01-lead/pilot.vue'
+import list from '@/views/02-read/list.vue'
+import detail from '@/views/02-read/detail.vue'
+import edit from '@/views/03-write/edit.vue'
+import user from '@/views/04-user/user.vue'
 
 
 const router = createRouter({
@@ -31,28 +32,49 @@ const router = createRouter({
          {
           path: '',
           name: 'techlead',
-          component: () => import('../views/lead/pilot.vue'),    
+          component: () => import('../views/01-lead/pilot.vue'),    
          },
-         {
-          path: '/artlist',
-          name: 'articlelist',
-          component: () => import('../views/read/list.vue'),    
-         },
-          {
-          path: '/artlist/:id',
+      ]
+    },
+    {
+      path: '/artlist',
+      name: 'articlelist',
+      component: () => import('@/Layout/index.vue'),
+      children: [
+        {
+          path: '',
+          name: 'articlelist-index',
+          component: () => import('../views/02-read/list.vue'),
+        },
+        {
+          path: ':id',
           name: 'artdetail',
-          component: () => import('../views/read/detail.vue'),    
-         },
-         {
-          path: '/create',
-          name: 'create',
-          component: () => import('../views/write/edit.vue'),
-         },
-         {
-          path: '/user',
-          name: 'usercenter',
-          component: () => import('../views/user/user.vue'),
-         },
+          component: () => import('../views/02-read/detail.vue'),
+        }
+      ]
+    },
+    {
+      path: '/create',
+      name: 'create',
+      component: () => import('@/Layout/index.vue'),
+      children: [
+        {
+          path: '',
+          name: 'create-index',
+          component: () => import('../views/03-write/edit.vue'),
+        }
+      ]
+    },
+    {
+      path: '/user',
+      name: 'usercenter',
+      component: () => import('@/Layout/index.vue'),
+      children: [
+        {
+          path: '',
+          name: 'usercenter-index',
+          component: () => import('../views/04-user/user.vue'),
+        }
       ]
     },
     {

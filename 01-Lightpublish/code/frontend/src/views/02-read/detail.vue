@@ -149,7 +149,7 @@ import { ref, onMounted, computed, onUnmounted} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
-import CommentPanel from '@/components/CommentPanel.vue'
+import CommentPanel from '@/components/02-read/CommentPanel.vue'
 
 const API_BASE_URL = 'http://localhost:3000/api'
 const route = useRoute()
@@ -208,7 +208,7 @@ const noteDialogStyle = computed(() => ({
 }))
 
 // 处理评论提交（来自组件的事件）
-const handleSubmitComment = async (content) => {
+const handleSubmitComment = async (content, parentId = null) => {
   if (!content.trim()) {
     alert('请输入评论内容')
     return
@@ -218,7 +218,8 @@ const handleSubmitComment = async (content) => {
     const commentData = {
       articleId: articleId.value,
       content: content,
-      author: '当前用户'  // 这里可以改成真实用户名
+      author: '当前用户',  // 这里可以改成真实用户名
+      parentId: parentId  // 如果是回复，则有 parentId
     }
     
     console.log('正在发表评论...', commentData)
@@ -594,7 +595,7 @@ const renderContent = (content) => {
 .title-underline {
   width: 60px;
   height: 4px;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
+  background: linear-gradient(135deg, #7FBB8A 0%, #FEE5D9 100%);
   border-radius: 2px;
 }
 
@@ -613,7 +614,7 @@ const renderContent = (content) => {
 .author-avatar {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
+  background: linear-gradient(135deg, #7FBB8A 0%, #FEE5D9 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -658,27 +659,27 @@ const renderContent = (content) => {
 
 .tag {
   padding: 0.4rem 0.8rem;
-  background: #f0f7ff;
-  border: 1px solid #d0e3ff;
+  background: linear-gradient(135deg, #F0F9F2 0%, #E8F5EB 100%);
+  border: 1px solid #D5EDDC;
   border-radius: 16px;
   font-size: 12px;
-  color: #2c5282;
+  color: #5A9865;
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .tag:hover {
-  background: #e1f0ff;
+  background: linear-gradient(135deg, #E8F5EB 0%, #D5EDDC 100%);
   transform: translateY(-1px);
 }
 
 /* 文章摘要卡片 */
 .article-summary-card {
-  background: #f8f9fa;
+  background: #F9FBF9;
   border-radius: 8px;
   padding: 1.25rem;
   margin-bottom: 2rem;
-  border-left: 4px solid #94b4eb;
+  border-left: 4px solid #7FBB8A;
 }
 
 .article-summary-card h3 {
@@ -724,7 +725,7 @@ const renderContent = (content) => {
 }
 
 .content a {
-  color: #855b90;
+  color: #7FBB8A;
   text-decoration: none;
 }
 
@@ -750,7 +751,7 @@ const renderContent = (content) => {
 }
 
 .content blockquote {
-  border-left: 4px solid #94b4eb;
+  border-left: 4px solid #7FBB8A;
   padding-left: 1rem;
   margin: 1.5rem 0;
   color: #666;

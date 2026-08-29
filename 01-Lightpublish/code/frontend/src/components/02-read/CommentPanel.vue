@@ -39,9 +39,13 @@
     <div v-if="!isMinimized" class="comment-content">
       <!-- 发表评论区域 -->
       <div class="comment-input-section" @mousedown.stop>
+        <div v-if="replyTo" class="reply-indicator">
+          <span>回复 <strong>{{ replyTo.author }}</strong></span>
+          <button @click="cancelReply" class="cancel-reply-btn">×</button>
+        </div>
         <textarea 
           v-model="newComment"
-          placeholder="写下你的评论..."
+          :placeholder="replyTo ? `回复 @${replyTo.author}...` : '写下你的评论...'"
           class="comment-input"
           rows="3"
           @mousedown.stop
@@ -52,7 +56,7 @@
             class="submit-btn"
             :disabled="!newComment.trim()"
           >
-            发表评论
+            {{ replyTo ? '回复' : '发表评论' }}
           </button>
         </div>
       </div>
@@ -73,9 +77,33 @@
               <button @click="$emit('like-comment', comment.id)" class="comment-action-btn">
                 ❤️ {{ comment.likes || 0 }}
               </button>
-              <button @click="$emit('reply-comment', comment.id)" class="comment-action-btn">
+              <button @click="setReplyTarget(comment)" class="comment-action-btn">
                 回复
               </button>
+            </div>
+            
+            <!-- 回复列表 -->
+            <div v-if="comment.replies && comment.replies.length > 0" class="replies-list">
+              <div v-for="reply in comment.replies" :key="reply.id" class="reply-item">
+                <div class="reply-avatar">
+                  {{ reply.author?.charAt(0) || '👤' }}
+                </div>
+                <div class="reply-body">
+                  <div class="reply-header">
+                    <span class="reply-author">{{ reply.author || '匿名用户' }}</span>
+                    <span class="reply-time">{{ formatDate(reply.createdAt) }}</span>
+                  </div>
+                  <div class="reply-text">{{ reply.content }}</div>
+                  <div class="reply-actions">
+                    <button @click="$emit('like-comment', reply.id)" class="reply-action-btn">
+                      ❤️ {{ reply.likes || 0 }}
+                    </button>
+                    <button @click="setReplyTarget(reply)" class="reply-action-btn">
+                      回复
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -129,6 +157,7 @@ const emit = defineEmits([
 ])
 
 const newComment = ref('')
+const replyTo = ref(null) // 回复的目标评论
 
 // 悬浮状态
 const isFloated = ref(false)
@@ -213,10 +242,34 @@ const toggleFloat = () => {
   }
 }
 
+// 设置回复目标
+const setReplyTarget = (comment) => {
+  replyTo.value = comment
+  // 自动聚焦到输入框
+  setTimeout(() => {
+    const textarea = document.querySelector('.comment-input')
+    if (textarea) textarea.focus()
+  }, 100)
+}
+
+// 取消回复
+const cancelReply = () => {
+  replyTo.value = null
+  newComment.value = ''
+}
+
 // 提交评论
 const submitComment = () => {
   if (!newComment.value.trim()) return
-  emit('submit-comment', newComment.value)
+  
+  // 如果有回复目标，发送回复事件
+  if (replyTo.value) {
+    emit('submit-comment', newComment.value, replyTo.value.id)
+    replyTo.value = null
+  } else {
+    emit('submit-comment', newComment.value)
+  }
+  
   newComment.value = ''
 }
 
@@ -366,7 +419,7 @@ onUnmounted(() => {
   z-index: 999;
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
+  background: linear-gradient(135deg, #94b4eb 0%, #8ceebfff 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -423,7 +476,7 @@ onUnmounted(() => {
 
 .panel-header {
   padding: 1rem;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
+  background: linear-gradient(135deg, #94b4eb 0%, #a0ead4 100%);
   color: white;
   display: flex;
   justify-content: space-between;
@@ -485,6 +538,36 @@ onUnmounted(() => {
   border-bottom: 1px solid #f0f0f0;
 }
 
+.reply-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, #F0F9F2 0%, #E8F5EB 100%);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  font-size: 13px;
+  color: #5A9865;
+}
+
+.reply-indicator strong {
+  color: #7FBB8A;
+}
+
+.cancel-reply-btn {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+}
+
+.cancel-reply-btn:hover {
+  color: #ff5252;
+}
+
 .comment-input {
   width: 100%;
   padding: 0.75rem;
@@ -509,7 +592,7 @@ onUnmounted(() => {
 
 .submit-btn {
   padding: 0.5rem 1.5rem;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
+  background: linear-gradient(135deg, #94b4eb 0%, #8ceebfff 100%);
   color: white;
   border: none;
   border-radius: 6px;
@@ -549,7 +632,7 @@ onUnmounted(() => {
 .comment-avatar {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #94b4eb 0%, #855b90 100%);
+  background: linear-gradient(135deg, #94b4eb 0%, #8ceebfff 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -607,6 +690,88 @@ onUnmounted(() => {
 
 .comment-action-btn:hover {
   background: #e0e0e0;
+}
+
+/* 回复列表 */
+.replies-list {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.reply-item {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.reply-item:last-child {
+  margin-bottom: 0;
+}
+
+.reply-avatar {
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #F0F9F2 0%, #E8F5EB 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7FBB8A;
+  font-size: 12px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.reply-body {
+  flex: 1;
+}
+
+.reply-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.reply-author {
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+}
+
+.reply-time {
+  font-size: 11px;
+  color: #999;
+}
+
+.reply-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.reply-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.reply-action-btn {
+  padding: 0.2rem 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  color: #999;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reply-action-btn:hover {
+  color: #7FBB8A;
 }
 
 .empty-comments {

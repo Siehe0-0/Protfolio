@@ -11,18 +11,43 @@ router.get('/', async (req, res) => {
       return res.json({ code: 400, message: '缺少文章ID' });
     }
     
+    // 查询所有评论（包括回复）
     const [comments] = await db.query(
-      `SELECT id, content, author, likes, created_at as createdAt
+      `SELECT id, article_id as articleId, parent_id as parentId, content, author, likes, created_at as createdAt
        FROM comments 
        WHERE article_id = ? 
-       ORDER BY created_at DESC`,
+       ORDER BY created_at ASC`,
       [articleId]
     );
+    
+    // 将评论组织成树形结构
+    const commentTree = [];
+    const commentMap = new Map();
+    
+    // 先建立索引
+    comments.forEach(comment => {
+      commentMap.set(comment.id, { ...comment, replies: [] });
+    });
+    
+    // 组织父子关系
+    comments.forEach(comment => {
+      const commentNode = commentMap.get(comment.id);
+      if (comment.parentId) {
+        // 这是回复评论，找到父评论
+        const parentComment = commentMap.get(comment.parentId);
+        if (parentComment) {
+          parentComment.replies.push(commentNode);
+        }
+      } else {
+        // 这是顶级评论
+        commentTree.push(commentNode);
+      }
+    });
     
     res.json({ 
       code: 200, 
       message: '获取评论成功',
-      data: comments 
+      data: commentTree 
     });
     
   } catch (error) {
@@ -34,29 +59,43 @@ router.get('/', async (req, res) => {
 // 发表评论
 router.post('/', async (req, res) => {
   try {
-    const { articleId, content, author = '匿名用户' } = req.body;
+    const { articleId, content, author = '匿名用户', parentId = null } = req.body;
     
     if (!articleId || !content) {
       return res.json({ code: 400, message: '缺少必要参数' });
     }
     
+    // 如果是回复，验证父评论是否存在
+    if (parentId) {
+      const [parentComments] = await db.query(
+        'SELECT id FROM comments WHERE id = ? AND article_id = ?',
+        [parentId, articleId]
+      );
+      
+      if (parentComments.length === 0) {
+        return res.json({ code: 400, message: '父评论不存在' });
+      }
+    }
+    
     const [result] = await db.query(
-      `INSERT INTO comments (article_id, content, author) 
-       VALUES (?, ?, ?)`,
-      [articleId, content, author]
+      `INSERT INTO comments (article_id, parent_id, content, author) 
+       VALUES (?, ?, ?, ?)`,
+      [articleId, parentId, content, author]
     );
     
-    // 更新文章的评论数
-    await db.query(
-      `UPDATE articles 
-       SET comment_count = comment_count + 1 
-       WHERE id = ?`,
-      [articleId]
-    );
+    // 只有顶级评论才更新文章的评论数
+    if (!parentId) {
+      await db.query(
+        `UPDATE articles 
+         SET comment_count = comment_count + 1 
+         WHERE id = ?`,
+        [articleId]
+      );
+    }
     
     res.json({ 
       code: 200, 
-      message: '评论发表成功',
+      message: parentId ? '回复成功' : '评论发表成功',
       data: { id: result.insertId }
     });
     

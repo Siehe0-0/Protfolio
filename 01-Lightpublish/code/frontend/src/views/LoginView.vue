@@ -314,7 +314,7 @@ const handleRegister = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #ace39b9c 100%);
   overflow: hidden;
   position: fixed; /* 使用 fixed 定位 */
   top: 0;
@@ -403,7 +403,7 @@ input.error {
 .submit-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #ace39b9c 100%);
   color: white;
   border: none;
   border-radius: 8px;

@@ -334,111 +334,98 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// 用户信息
+// 用户信息（从 API 获取）
 const userInfo = ref({
-  id: 1,
-  name: 'LightPublish用户',
-  email: 'user@lightpublish.com',
+  id: null,
+  name: '',
+  email: '',
   avatar: '',
-  bio: '热爱写作与分享的前端开发者',
-  location: '上海',
-  website: 'https://lightpublish.com',
-  joinDate: '2024-01-01',
-  isVerified: true
+  bio: '',
+  location: '',
+  website: '',
+  joinDate: '',
+  isVerified: false
 })
 
-// 统计数据
+// 统计数据（从 API 获取）
 const stats = reactive({
-  totalArticles: 42,
-  totalViews: 15234,
-  totalLikes: 1289,
-  totalComments: 567,
-  avgReadingTime: 3,
+  totalArticles: 0,
+  totalViews: 0,
+  totalLikes: 0,
+  totalComments: 0,
+  avgReadingTime: 0,
   trend: 'up'
 })
 
-// 最近文章
-const recentArticles = ref([
-  {
-    id: 1,
-    title: 'Vue 3 Composition API 最佳实践',
-    summary: '分享在实际项目中使用Vue 3 Composition API的经验和技巧...',
-    publishTime: '2024-03-15',
-    views: 1234,
-    likes: 89,
-    comments: 24,
-    status: 'published'
-  },
-  {
-    id: 2,
-    title: 'TypeScript在大型项目中的应用',
-    summary: '探讨如何在大型前端项目中有效使用TypeScript进行类型安全开发...',
-    publishTime: '2024-03-10',
-    views: 987,
-    likes: 67,
-    comments: 18,
-    status: 'published'
-  },
-  {
-    id: 3,
-    title: '现代CSS布局方案对比',
-    summary: '对比Flexbox、Grid等现代CSS布局方案的优缺点和适用场景...',
-    publishTime: '2024-03-05',
-    views: 765,
-    likes: 45,
-    comments: 12,
-    status: 'draft'
-  },
-  {
-    id: 4,
-    title: 'Web性能优化实战指南',
-    summary: '从理论到实践，全方位介绍Web性能优化的方法和工具...',
-    publishTime: '2024-02-28',
-    views: 2100,
-    likes: 156,
-    comments: 42,
-    status: 'published'
-  }
-])
+// 最近文章（从 API 获取）
+const recentArticles = ref([])
 
-// 最近活动
-const recentActivities = ref([
-  {
-    id: 1,
-    type: 'publish',
-    text: '发布了新文章《Vue 3 Composition API 最佳实践》',
-    time: '2024-03-15 14:30:00'
-  },
-  {
-    id: 2,
-    type: 'comment',
-    text: '在文章《TypeScript在大型项目中的应用》收到新评论',
-    time: '2024-03-14 09:15:00'
-  },
-  {
-    id: 3,
-    type: 'like',
-    text: '文章《现代CSS布局方案对比》获得10个新的赞',
-    time: '2024-03-13 16:45:00'
-  },
-  {
-    id: 4,
-    type: 'edit',
-    text: '修改了文章《Web性能优化实战指南》的内容',
-    time: '2024-03-12 11:20:00'
-  },
-  {
-    id: 5,
-    type: 'follow',
-    text: '有5位新用户关注了你',
-    time: '2024-03-11 19:05:00'
-  }
-])
+// 最近活动（从 API 获取）
+const recentActivities = ref([])
 
-// 图表数据
+// 图表数据（从 API 获取）
 const chartPeriod = ref('month')
-const chartData = ref([12, 19, 8, 15, 10, 20, 14])
-const chartLabels = ref(['一', '二', '三', '四', '五', '六', '日'])
+const chartData = ref([])
+const chartLabels = ref([])
+
+// 加载用户数据
+const loadUserData = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    if (!user.id) {
+      router.push('/login')
+      return
+    }
+    
+    // 获取用户信息
+    const userRes = await fetch(`http://localhost:3000/api/users/${user.id}`)
+    if (userRes.ok) {
+      const userData = await userRes.json()
+      if (userData.code === 200) {
+        userInfo.value = userData.data
+      }
+    }
+    
+    // 获取统计数据
+    const statsRes = await fetch(`http://localhost:3000/api/users/${user.id}/stats`)
+    if (statsRes.ok) {
+      const statsData = await statsRes.json()
+      if (statsData.code === 200) {
+        Object.assign(stats, statsData.data)
+      }
+    }
+    
+    // 获取最近文章
+    const articlesRes = await fetch(`http://localhost:3000/api/users/${user.id}/articles?limit=5`)
+    if (articlesRes.ok) {
+      const articlesData = await articlesRes.json()
+      if (articlesData.code === 200) {
+        recentArticles.value = articlesData.data
+      }
+    }
+    
+    // 获取最近活动
+    const activitiesRes = await fetch(`http://localhost:3000/api/users/${user.id}/activities?limit=10`)
+    if (activitiesRes.ok) {
+      const activitiesData = await activitiesRes.json()
+      if (activitiesData.code === 200) {
+        recentActivities.value = activitiesData.data
+      }
+    }
+    
+    // 获取图表数据
+    const chartRes = await fetch(`http://localhost:3000/api/users/${user.id}/chart?period=${chartPeriod.value}`)
+    if (chartRes.ok) {
+      const chartData = await chartRes.json()
+      if (chartData.code === 200) {
+        chartData.value = chartData.data.values
+        chartLabels.value = chartData.data.labels
+      }
+    }
+  } catch (error) {
+    console.error('加载用户数据失败:', error)
+  }
+}
 
 // 编辑相关
 const showEditModal = ref(false)
@@ -460,11 +447,7 @@ const articlesByStatus = computed(() => {
 
 // 生命周期
 onMounted(() => {
-  // 模拟加载数据
-  setTimeout(() => {
-    // 这里可以添加API调用
-    console.log('个人中心数据加载完成')
-  }, 500)
+  loadUserData()
 })
 
 // 方法
@@ -624,7 +607,7 @@ const logout = () => {
 <style scoped>
 .user-center-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ace39b9c 0%, #ace39b9c 100%);
   padding: 20px;
 }
 
@@ -669,7 +652,7 @@ const logout = () => {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #ace39b9c 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1035,7 +1018,7 @@ const logout = () => {
 }
 
 .stats-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #ace39b9c 100%);
   border-radius: 15px;
   padding: 25px;
   color: white;
@@ -1158,7 +1141,7 @@ const logout = () => {
 
 .chart-bar {
   width: 40px;
-  background: linear-gradient(to top, #667eea, #764ba2);
+  background: linear-gradient(to top, #667eea, #ace39b9c);
   border-radius: 8px 8px 0 0;
   transition: all 0.3s;
 }
@@ -1360,7 +1343,7 @@ const logout = () => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #ace39b9c 100%);
   color: white;
   border: none;
 }
