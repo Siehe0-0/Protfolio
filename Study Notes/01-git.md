@@ -122,19 +122,16 @@ git push -u origin main
 
 ```
 
-### 2.2 DNS解析失败
-- 报错：lookup github-cloud.s3.amazonaws.com: no such host 
-- 说明：国内 DNS 污染或网络问题，无法解析GitHub LFS 存储图片的 AWS S3 服务器地址
-> **有以下四个方案解决：**
->
-> - 1.修改hosts文件（低风险）
-> - 2.配置git代理（中低风险）
-> - 3.更换系统DNS（安全）
-> - 4.使用SSH协议（安全）
+### 2.2 git推送失败
+![Git推送网络路径](./img/git/push.png)
+> 想从本地去往A地，但是只知道A地名称，通过DNS查询A地详细地址，
+
+#### 2.2.1 DNS解析失败或污染
+- 报错：no such host / Could not resolve host
+- 解决方案1：更换系统DNS（安全）
+- 解决方案2：修改hosts文件（低风险）
 
 ```
-
-#在此仅介绍修改hosts文件
 1.获取可信ip
 -在powershell执行nslookup命令查询ip地址
 -其中，8.8.8.8 是 Google 的公共 DNS 服务器，全球可用，不经过任何运营商劫持。
@@ -149,8 +146,21 @@ git push -u origin main
 
 3.重新尝试推送
 git push
-
 ```
+
+#### 2.2.2 网络通路问题
+- 报错：no such host / Could not resolve host
+- 解决方案1：配置git代理（中低风险）
+- 解决方案2：VPN
+- 解决方案3：
+
+#### 2.2.3 git协议问题
+- 报错：no such host / Could not resolve host
+- 解决方案1：使用SSH协议（安全）
+- 解决方案2：
+
+
+
 
 ### 2.3 删除错误上传的文件夹
   例如，我们要删除的文件夹名为B，上级文件夹为A
