@@ -122,12 +122,15 @@ git push -u origin main
 
 ```
 
-### 2.2 git推送失败
+### 2.2 Git推送失败
 ![Git推送网络路径](./img/git/push.png)
-> 想从本地去往A地，但是只知道A地名称，通过DNS查询A地详细地址，
+> 现状： 将快递从本地去往A地，但是只知道A地名称，需要查询A地详细地址（IP）。
+> 第一步：通过DNS查询A地详细地址，DNS中可能查不到或者查错了，有两种解决办法（见 2.2.1 DNS问题）。
+> 第二步：选择路径时发现路况不好，有三种解决办法，见 2.2.2 网络通路问题。
+> 第三步：到楼下后发现拥堵，有两种方法，见 2.2.3 Git 协议问题。
 
-#### 2.2.1 DNS解析失败或污染
-- 报错：no such host / Could not resolve host
+#### 2.2.1 DNS问题
+- 报错：`no such host `或` Could not resolve host `
 - 解决方案1：更换系统DNS（安全）
 - 解决方案2：修改hosts文件（低风险）
 
@@ -154,7 +157,7 @@ git push
 - 解决方案2：VPN
 - 解决方案3：
 
-#### 2.2.3 git协议问题
+#### 2.2.3 Git协议问题
 - 报错：no such host / Could not resolve host
 - 解决方案1：使用SSH协议（安全）
 - 解决方案2：
