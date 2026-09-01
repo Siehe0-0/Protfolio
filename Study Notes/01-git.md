@@ -123,8 +123,8 @@ git push -u origin main
 ```
 
 ### 2.2 Git推送失败
-下图为Git推送网络路径图。
-![Git推送网络路径](./img/git/push.png)
+下图为Git推送网络路径概念图。
+![Git推送网络路径概念图](./img/git/push.png)
 > 现状： 将快递从本地送至A地，但是只知道A地名称，需要查询A地详细地址（IP）。  
 > 第一步：通过DNS查询A地详细地址，DNS中可能查不到或者查错了，有两种解决办法（见 2.2.1 DNS问题）。  
 > 第二步：快递输送链有关卡，有三种过关方法，见 2.2.2 网络通路问题。  
@@ -139,10 +139,14 @@ git push -u origin main
 
 - 解决方案2：修改hosts文件（低风险，永久）
 ```
-1.获取可信ip
+#1.获取可信ip
 #在powershell执行nslookup命令查询GitHub的真实IP
 #其中，8.8.8.8 是 Google 的公共 DNS 服务器，全球可用，不经过任何运营商劫持。
 #部分公共网络会劫持或拦截外部 DNS 请求，导致查到的 IP 不准确或超时，请更换为热点
+-日常
+nslookup github.com 8.8.8.8
+-上传/下载图片等大文件（Git LFS 见2.4）
+nslookup github-cloud.s3.amazonaws.com 8.8.8.8
 
 
 2.修改hosts文件
@@ -158,7 +162,11 @@ git push
 - 解决方案3：刷新DNS（安全）
 
 ```
+1.在powershell执行刷新命令
+ipconfig /flushdns
 
+#验证
+ping github.com
 
 ```
 
@@ -225,20 +233,23 @@ git push force all
 ```
 
 ### 2.5 分支管理
-#### 2.5.1 拉取指定分支
-  假设当前分支为"BBB"， 欲拉取分支 "AAA"
+#### 2.5.1 新建分支
+方法一：在远程新建分支
 
 ```
-#不切换分支直接拉取指定分支
+#拉取在远程新建的AAA分支
 git pull origin AAA
+```
 
+方法二：在本地新建分支
+
+```
 ```
 
 #### 2.5.2 切换分支
   将 分支"BBB" 切换为分支 "AAA" 
 
 ```
-
 #注意保存并关闭原分支文件夹
 git checkout AAA
 
