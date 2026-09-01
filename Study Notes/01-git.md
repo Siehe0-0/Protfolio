@@ -123,11 +123,12 @@ git push -u origin main
 ```
 
 ### 2.2 Git推送失败
+下图为Git推送网络路径图。
 ![Git推送网络路径](./img/git/push.png)
-> 现状： 将快递从本地去往A地，但是只知道A地名称，需要查询A地详细地址（IP）。  
+> 现状： 将快递从本地送至A地，但是只知道A地名称，需要查询A地详细地址（IP）。  
 > 第一步：通过DNS查询A地详细地址，DNS中可能查不到或者查错了，有两种解决办法（见 2.2.1 DNS问题）。  
-> 第二步：选择路径时发现路况不好，有三种解决办法，见 2.2.2 网络通路问题。  
-> 第三步：到楼下后发现拥堵，有两种方法，见 2.2.3 Git 协议问题。
+> 第二步：快递输送链有关卡，有三种过关方法，见 2.2.2 网络通路问题。  
+> 第三步：快递进楼需验证，有两种验证方法，见 2.2.3 Git 协议问题。
 
 #### 2.2.1 DNS问题
 - 报错：`no such host `或` Could not resolve host `
@@ -152,7 +153,7 @@ git push
 ```
 
 #### 2.2.2 网络通路问题
-- 报错：no such host / Could not resolve host
+- 报错：`Could not connect to server` / `Connection was reset `/`Recv failure`
 - 解决方案1：配置git代理（中低风险）
 - 解决方案2：VPN
 - 解决方案3：
