@@ -110,7 +110,6 @@
   创建远程仓库时勾选了"Add a README"或".gitignore"
 
 ```
-
 # 先拉取远程内容（因为远程不为空）
 git pull origin main --allow-unrelated-histories
 
@@ -119,7 +118,6 @@ git pull origin main --allow-unrelated-histories
 
 # 然后再推送
 git push -u origin main
-
 ```
 
 ### 2.2 Git推送失败
