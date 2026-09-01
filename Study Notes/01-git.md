@@ -132,14 +132,17 @@ git push -u origin main
 
 #### 2.2.1 DNS问题
 - 报错：`no such host `或` Could not resolve host `
-- 解决方案1：更换系统DNS（安全）
-- 解决方案2：修改hosts文件（低风险）
+- 解决方案1：更换系统DNS（安全，永久）
+```
 
 ```
+
+- 解决方案2：修改hosts文件（低风险，永久）
+```
 1.获取可信ip
--在powershell执行nslookup命令查询ip地址
--其中，8.8.8.8 是 Google 的公共 DNS 服务器，全球可用，不经过任何运营商劫持。
--部分学校校园网较严格，请更换为热点
+#在powershell执行nslookup命令查询GitHub的真实IP
+#其中，8.8.8.8 是 Google 的公共 DNS 服务器，全球可用，不经过任何运营商劫持。
+#部分公共网络会劫持或拦截外部 DNS 请求，导致查到的 IP 不准确或超时，请更换为热点
 
 
 2.修改hosts文件
@@ -150,13 +153,20 @@ git push -u origin main
 
 3.重新尝试推送
 git push
+
+```
+- 解决方案3：刷新DNS（安全）
+
+```
+
+
 ```
 
 #### 2.2.2 网络通路问题
-- 报错：`Could not connect to server` / `Connection was reset `/`Recv failure`
+- 报错：`Could not connect to server` / `Recv failure: Connection was reset`
 - 解决方案1：配置git代理（中低风险）
 - 解决方案2：VPN
-- 解决方案3：
+- 解决方案3：防火墙
 
 #### 2.2.3 Git协议问题
 - 报错：no such host / Could not resolve host
