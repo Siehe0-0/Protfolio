@@ -129,7 +129,7 @@ git push -u origin main
 > 第三步：快递进楼需验证，有两种验证方法，见 2.2.3 Git 协议问题。
 
 #### 2.2.1 DNS问题
-- 报错：`no such host `或` Could not resolve host `
+- 报错：`no such host`或`Could not resolve host `
 - 解决方案1：更换系统DNS（安全，永久）
 ```
 
@@ -175,7 +175,7 @@ ping github.com
 - 解决方案3：防火墙
 
 #### 2.2.3 Git协议问题
-- 报错：no such host / Could not resolve host
+- 报错：`SSL certificate problem` / `Authentication failed`
 - 解决方案1：使用SSH协议（安全）
 - 解决方案2：
 
