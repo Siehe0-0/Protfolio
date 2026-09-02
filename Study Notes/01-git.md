@@ -235,13 +235,27 @@ git push force all
 方法一：在远程新建分支
 
 ```
-#拉取在远程新建的AAA分支
-git pull origin AAA
+1.github网页版新建分支
+
+2.拉取在远程新建的BBB分支
+#
+git fetch
+git checkout BBB
+#
+git pull origin BBB
 ```
 
-方法二：在本地新建分支
-
+方法二：在本地新建分支BBB
 ```
+1.在本地新建
+#新建分支BBB
+git branch BBB
+#新建并切换至新分支BBB
+git checkout -b BBB
+
+2.推送至远程
+git push -u origin BBB
+
 ```
 
 #### 2.5.2 切换分支
