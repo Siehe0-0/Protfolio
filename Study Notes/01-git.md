@@ -186,7 +186,6 @@ ping github.com
   例如，我们要删除的文件夹名为B，上级文件夹为A
 
 ```
-
 #进入文件夹A，打开终端
 
 #删除操作
@@ -197,7 +196,6 @@ git commit -m "删除错误文件夹"
 
 #推送到远程
 git push
-
 ```
 
 ### 2.4 上传图片大导致的仓库臃肿
@@ -205,7 +203,6 @@ git push
   - Git存储和LFS存储分开管理
   
 ```
-
 #工具安装
 1.Windows：git for windows自带
 2.macOS:brew install git-lfs
@@ -227,7 +224,6 @@ git lfs migrate import --include="*.png, *.jpg" --everything
 
 #修改历史后需要强制推送
 git push force all
-
 ```
 
 ### 2.5 分支管理
@@ -247,15 +243,15 @@ git pull origin BBB
 
 方法二：在本地新建分支BBB
 ```
-1.在本地新建
-#新建分支BBB
+1.在本地新建分支BBB
+#选项a:新建分支BBB
 git branch BBB
-#新建并切换至新分支BBB
+
+#选项b:新建并切换至新分支BBB
 git checkout -b BBB
 
 2.推送至远程
 git push -u origin BBB
-
 ```
 
 #### 2.5.2 切换分支
@@ -264,7 +260,6 @@ git push -u origin BBB
 ```
 #注意保存并关闭原分支文件夹
 git checkout AAA
-
 ```
 
 #### 2.5.3 分支改名
