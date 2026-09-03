@@ -110,13 +110,13 @@
   创建远程仓库时勾选了"Add a README"或".gitignore"
 
 ```
-# 先拉取远程内容（因为远程不为空）
+1.先拉取远程内容（因为远程不为空）
 git pull origin main --allow-unrelated-histories
 
-# 解决可能的冲突
+2.解决可能的冲突
 # 如果提示有冲突，手动合并文件
 
-# 然后再推送
+3.再推送
 git push -u origin main
 ```
 
@@ -165,7 +165,7 @@ git push
 1.在powershell执行刷新命令
 ipconfig /flushdns
 
-#验证
+2.验证(可选)
 ping github.com
 
 ```
@@ -188,15 +188,15 @@ ping github.com
   例如，我们要删除的文件夹名为B，上级文件夹为A
 
 ```
-#进入文件夹A，打开终端
+1.进入文件夹A，打开终端
 
-#删除操作
+2.删除操作
 git rm -r "B"
 
-#提交修改信息
-git commit -m "删除错误文件夹"
+3.提交修改信息
+git commit -m "删除错误文件夹B"
 
-#推送到远程
+4.推送到远程
 git push
 ```
 
@@ -205,26 +205,26 @@ git push
   - Git存储和LFS存储分开管理
   
 ```
-#工具安装
-1.Windows：git for windows自带
-2.macOS:brew install git-lfs
-3.Linux:sudo apt-get install git-lfs
+1.工具安装
+Windows：git for windows自带
+macOS:brew install git-lfs
+Linux:sudo apt-get install git-lfs
 
-#工具初始化
+2.工具初始化
 git lfs install
 
-#指定要追踪的图片类型
+3.指定要追踪的图片类型
 git lfs track "*.png"
 git lfs track "*.jpg"
 
-#提交.gitattributes配置文件的修改，LGS规则通过该文件共享，安装LFS客户端即可获取真实文件
+4.提交.gitattributes配置文件的修改，LGS规则通过该文件共享，安装LFS客户端即可获取真实文件
 git add .gitattributes
 git commit -m "使用GitLFS管理图片"
 
-#配置之前已上传过图片的解决方法：重写历史并迁移图片
+5.配置之前已上传过图片的解决方法：重写历史并迁移图片
 git lfs migrate import --include="*.png, *.jpg" --everything
 
-#修改历史后需要强制推送
+6.修改历史后需要强制推送
 git push force all
 ```
 
@@ -236,11 +236,11 @@ git push force all
 1.github网页版新建分支
 
 2.拉取在远程新建的BBB分支
-#选项a:
+#选项a:先fetch命令查看远程，再切换
 git fetch
 git checkout BBB
 
-#选项b:
+#选项b:直接pull命令拉取
 git pull origin BBB
 ```
 
@@ -269,18 +269,19 @@ git checkout AAA
   将 "BBB" 分支名改为 "AAA" 
 
 ```
-#当前分支改名
+1.修改分支名
+#选项a:修改当前分支名
 git branch -m AAA
 
-#直接修改
+#选项b:修改指定分支名
 git branch -m BBB AAA
 
 ⚠如果已经推送过远程，修改分支名后还需要同步远程分支,如下：
 
-#推送新分支
+2。推送修改后的分支
 git push origin -u AAA 
 
-#删除远程旧分支
+3.删除远程旧分支
 git push origin --delete BBB 
 
 ```
@@ -289,19 +290,19 @@ git push origin --delete BBB
   当前分支为分支AAA，将分支 "BBB" 中当前内容复制到分支 "AAA" 中
 
 ```
-#查看当前分支 (带 * 的是当前分支)
+1.查看当前分支 (带 * 的是当前分支)
 git branch
 
-#将 BBB 的内容合并到 AAA
+2.将 BBB 的内容合并到 AAA
 git merge BBB
 
-#如果有冲突，修改冲突文件(同名文件等)
+3.如果有冲突，修改冲突文件(同名文件等)
 
-#整体提交或提交冲突文件
+4.整体提交或提交冲突文件
 git add .
 git commit -m "merge BBB into AAA"
 
-#推送到远程
+5.推送到远程
 git push
 
 ```
