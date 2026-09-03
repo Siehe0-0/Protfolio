@@ -132,7 +132,28 @@ git push -u origin main
 - 报错：`no such host`或`Could not resolve host `
 - 解决方案1：更换系统DNS（安全，永久）
 ```
+# Windows 11/10 图形界面操作：
+# 1. 设置 → 网络和 Internet → 以太网/Wi-Fi
+# 2. 点击当前连接的网络 → 点击"编辑"（DNS服务器分配）
+# 3. 将"自动(DHCP)"改为"手动"
+# 4. 打开 IPv4，填入：
+#    首选 DNS：8.8.8.8（Google）
+#    备选 DNS：114.114.114.114（国内通用）
+# 5. 保存
 
+# 或使用命令行直接修改（需管理员权限）：
+# 查看当前网络连接名称
+netsh interface show interface
+
+# 将 "以太网" 替换为你的网络名称，修改 DNS
+netsh interface ip set dns "以太网" static 8.8.8.8
+netsh interface ip add dns "以太网" 114.114.114.114 index=2
+
+# 刷新 DNS 缓存
+ipconfig /flushdns
+
+# 验证
+ping github.com
 ```
 
 - 解决方案2：修改hosts文件（低风险，永久）
@@ -276,8 +297,7 @@ git branch -m AAA
 #选项b:修改指定分支名
 git branch -m BBB AAA
 
-⚠如果已经推送过远程，修改分支名后还需要同步远程分支,如下：
-
+⚠⚠⚠如果已经推送过远程，修改分支名后还需要同步远程分支,如下：
 2。推送修改后的分支
 git push origin -u AAA 
 
