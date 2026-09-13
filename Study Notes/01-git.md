@@ -107,12 +107,10 @@
 
 ## 二、常见问题及解决
 ### 2.1 远程仓库已有文件（如README）
-  创建远程仓库时勾选了"Add a README"或".gitignore"
-
-```
-1.先拉取远程内容（因为远程不为空）
-git pull origin main --allow-unrelated-histories
-
+  **现状**：创建远程仓库时勾选了"Add a README"或".gitignore"
+  **解决方案**：
+1.用`git pull origin main --allow-unrelated-histories 命令拉取远程内容。
+2.
 2.解决可能的冲突
 # 如果提示有冲突，手动合并文件
 
@@ -129,8 +127,8 @@ git push -u origin main
 > 第三步：快递进楼需验证，有两种验证方法，见 2.2.3 Git 协议问题。
 
 #### 2.2.1 DNS问题
-- 报错：`no such host`或`Could not resolve host `
-- 解决方案1：更换系统DNS（安全，永久）
+- **报错**：`no such host`或`Could not resolve host `
+- **解决方案**1：更换系统DNS（安全，永久）
 ```
 # Windows 11/10 图形界面操作：
 # 1. 设置 → 网络和 Internet → 以太网/Wi-Fi
